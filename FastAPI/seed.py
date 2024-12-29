@@ -1,6 +1,7 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from app import NetflixOriginal, DATABASE_URL
+from database import DATABASE_URL
+from model import NetflixOriginal
 
 # Database setup
 engine = create_engine(DATABASE_URL)
@@ -24,7 +25,7 @@ def seed_database():
     for title in titles:
         existing_entry = db.query(NetflixOriginal).filter_by(title=title).first()
         if not existing_entry:
-            db.add(NetflixOriginal(title=title, type="Series", language="English", release_date="2025-1-1"))
+            db.add(NetflixOriginal(title=title, type="Series", language="English", release_date="2025-1-1", genre="Drama"))
     db.commit()
     db.close()
     print("Database seeded successfully!")
