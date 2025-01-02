@@ -25,7 +25,7 @@ def seed_database():
     for title in titles:
         existing_entry = db.query(OriginalContent).filter_by(title=title).first()
         if not existing_entry:
-            db.add(OriginalContent(title=title, type="Series", language="English", release_date="2025-1-1", genre="Drama"))
+            db.add(OriginalContent(title=title, type="Series", service="Netflix", language="English", release_date="2025-1-1", genre="Drama", status="Active"))
     db.commit()
     db.close()
     print("Database seeded successfully!")

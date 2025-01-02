@@ -151,11 +151,3 @@ def format_date(rawDate):
 
     formatted_date = year + "-" + month + "-" + date
     return formatted_date
-
-# results = extract_tables(wiki_content.return_NF_films_2015_to_2017())
-
-# for result in results:
-#     cleaned_table = process_table(result)
-#     if cleaned_table:
-#         if len(cleaned_table['rows']) > 0:
-#             print(cleaned_table)

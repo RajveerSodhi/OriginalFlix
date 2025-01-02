@@ -30,7 +30,7 @@ class OriginalContentModel(OriginalContentBase):
     id: int
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 # get DB session
@@ -53,8 +53,8 @@ Base.metadata.create_all(bind=engine)
 def root():
     return {"message": "Welcome to the OriginalFlix API!"}
 
-# get List of Netflix Originals
-@app.get("/originals", response_model=List[OriginalContentModel], summary="Get List of Netflix Originals")
+# get List of Originals
+@app.get("/originals", response_model=List[OriginalContentModel], summary="Get List of Originals")
 async def read_netflix_originals(db: db_dependency, skip: int = 0, limit: int = 100):
     originals = db.query(OriginalContent).offset(skip).limit(limit).all()
     return originals
