@@ -1,7 +1,7 @@
 from database import Base
 from sqlalchemy import Column, Integer, String, Date
 
-class Content(Base):
+class OriginalContent(Base):
     __tablename__ = "content"
 
     id = Column(Integer, primary_key=True, index=True)

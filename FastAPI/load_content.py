@@ -1,7 +1,7 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from database import DATABASE_URL
-from model import Content
+from model import OriginalContent
 
 # Database setup
 engine = create_engine(DATABASE_URL)
@@ -23,9 +23,9 @@ titles = [
 def seed_database():
     db = SessionLocal()
     for title in titles:
-        existing_entry = db.query(Content).filter_by(title=title).first()
+        existing_entry = db.query(OriginalContent).filter_by(title=title).first()
         if not existing_entry:
-            db.add(Content(title=title, type="Series", language="English", release_date="2025-1-1", genre="Drama", status="Active"))
+            db.add(OriginalContent(title=title, type="Series", language="English", release_date="2025-1-1", genre="Drama", status="Active"))
     db.commit()
     db.close()
     print("Database seeded successfully!")
