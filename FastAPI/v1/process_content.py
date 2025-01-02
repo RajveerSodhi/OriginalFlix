@@ -54,13 +54,16 @@ def process_table(table):
     title_idx = get_column_index(['Title'], headers)
     release_date_idx = get_column_index(['Release Date', 'Release date', 'Premiere'], headers)
     genre_idx = get_column_index(['Genre'], headers)
-    language_idx = get_column_index(['Language'], headers)
+    language_idx = get_column_index(['Language', 'Language(s)'], headers)
     runtime_idx = get_column_index(['Runtime'], headers)
+    status_idx = get_column_index(['Status'], headers)
 
     if title_idx == -1:
         return None
 
     cleaned_rows = []
+    final_headers = ['Title']
+
     for row in rows:
         # Skip rows that do not have all required columns
         if len(row) < len(headers):
@@ -86,31 +89,36 @@ def process_table(table):
         # Format the release date
         if valid_row:
             formatted_date = format_date(release_date)
+            final_headers.append('Release Year')
         else:
             formatted_date = None
             continue
 
         if genre_idx != -1:
             genre = row[genre_idx]
+            final_headers.append('Genre')
         else:
             genre = None
 
         if language_idx != -1:
             language = row[language_idx]
+            final_headers.append('Language')
         else:
             language = None
+
+        if status_idx != -1:
+            status = row[status_idx]
+            final_headers.append('Status')
         
         cleaned_row = [
             row[title_idx],
             formatted_date,
             genre,
-            language
+            language,
+            status
         ]
         
         cleaned_rows.append(cleaned_row)
-    
-    # Update headers to include 'Release Year' instead of 'Release date'
-    final_headers = ['Title', 'Release_Date', 'Genre', 'Language']
     
     cleaned_table = {
         'headers': final_headers,
