@@ -109,6 +109,8 @@ def process_table(table):
         if status_idx != -1:
             status = row[status_idx]
             final_headers.append('Status')
+        else:
+            status = None
         
         cleaned_row = [
             row[title_idx],

@@ -4,7 +4,7 @@ from typing import List, Optional, Annotated
 from sqlalchemy.orm import Session
 from pydantic import BaseModel
 from database import SessionLocal, engine
-from model import NetflixOriginal, Base
+from model import Content, Base
 from fastapi.middleware.cors import CORSMiddleware
 
 # Initialize FastAPI app
