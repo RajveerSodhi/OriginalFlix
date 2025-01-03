@@ -62,7 +62,6 @@ def process_table(table):
         return None
 
     cleaned_rows = []
-    final_headers = ['Title']
 
     for row in rows:
         # Skip rows that do not have all required columns
@@ -90,30 +89,31 @@ def process_table(table):
         # Format the release date
         if valid_row:
             formatted_date = format_date(release_date)
-            final_headers.append('Release Year')
         else:
             formatted_date = None
             continue
 
         if genre_idx != -1:
             genre = row[genre_idx]
-            final_headers.append('Genre')
         else:
             genre = None
 
         if language_idx != -1:
             language = row[language_idx]
-            final_headers.append('Language')
         else:
-            language = None
+            if category_is_language(category):
+                language = category
+                category = 'Uncategorized'
+            else:
+                language = None
 
         if status_idx != -1:
             status = row[status_idx]
-            final_headers.append('Status')
         else:
             status = None
         
-        final_headers.append('Category')
+        if category.lower() == 'other':
+            category = 'Uncategorized'
 
         cleaned_row = [
             row[title_idx],
@@ -127,7 +127,7 @@ def process_table(table):
         cleaned_rows.append(cleaned_row)
     
     cleaned_table = {
-        'headers': final_headers,
+        'headers': ['Title', 'Release Date', 'Genre', 'Language', 'Status', 'Category'],
         'rows': cleaned_rows
     }
     return cleaned_table  
@@ -156,3 +156,54 @@ def format_date(rawDate):
     formatted_date = year + "-" + month + "-" + date
 
     return formatted_date
+
+def category_is_language(category):
+    languages = ['english',
+                'spanish',
+                'swedish',
+                'french',
+                'german',
+                'italian',
+                'portuguese',
+                'polish',
+                'japanese',
+                'korean',
+                'chinese',
+                'mandarin',
+                'russian',
+                'hindi',
+                'arabic',
+                'thai',
+                'turkish',
+                'dutch',
+                'danish',
+                'indonesian',
+                'norwegian',
+                'greek',
+                'punjabi',
+                'hebrew',
+                'czech',
+                'hungarian',
+                'finnish',
+                'vietnamese',
+                'romanian',
+                'malayalam',
+                'bengali',
+                'tamil',
+                'telugu',
+                'marathi',
+                'kannada',
+                'gujarati',
+                'odia',
+                'malay',
+                'filipino',
+                'urdu',
+                'sinhala',
+                'nepali',
+                'bhojpuri',
+                'zulu',
+                'sotho',
+                'yoruba',
+                'igbo'
+                ]
+    return category.lower() in languages

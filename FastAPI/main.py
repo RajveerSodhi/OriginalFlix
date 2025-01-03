@@ -47,7 +47,6 @@ db_dependency = Annotated[Session, Depends(get_db)]
 Base.metadata.create_all(bind=engine)
 
 
-
 # Root endpoint
 @app.get("/", summary="Root Endpoint")
 def root():
