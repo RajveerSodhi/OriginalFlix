@@ -239,6 +239,7 @@ def update_database():
                         db.add(new_entry)
                     
                     print(f"Inserted {len(cleaned_table['rows'])} new entries for {current_service} {current_type} content")
+            db.commit()
 
     # 7) Commit all changes
     db.commit()

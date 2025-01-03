@@ -149,6 +149,14 @@ def format_date(rawDate):
         "december": "12"
     }
 
+    if len(elements) != 3:
+        return None
+
+    # If elements[0] not in months, skip
+    month_str = elements[0].lower().rstrip(',')
+    if month_str not in months:
+        return None
+
     month = months[elements[0].lower()].strip()
     date = elements[1][:-1].strip()
     year = elements[2].strip()
