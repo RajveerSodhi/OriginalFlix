@@ -58,7 +58,7 @@ def process_table(table):
     runtime_idx = get_column_index(['Runtime'], headers)
     status_idx = get_column_index(['Status'], headers)
 
-    if title_idx == -1:
+    if title_idx == -1 or len(headers) <= 2:
         return None
 
     cleaned_rows = []
@@ -115,8 +115,10 @@ def process_table(table):
         if category.lower() == 'other':
             category = 'Uncategorized'
 
+        title = row[title_idx].strip("†").strip("≈").strip("[id]")
+
         cleaned_row = [
-            row[title_idx],
+            title,
             formatted_date,
             genre,
             language,
@@ -133,6 +135,15 @@ def process_table(table):
     return cleaned_table  
 
 def format_date(rawDate):
+    if not rawDate:
+        return None
+    
+    rawDate = rawDate.replace(',', '')
+
+    parsed_month = None
+    parsed_day = None
+    parsed_year = None
+
     elements = rawDate.split()
     months = {
         "january": "1",
@@ -152,18 +163,33 @@ def format_date(rawDate):
     if len(elements) != 3:
         return None
 
-    # If elements[0] not in months, skip
-    month_str = elements[0].lower().rstrip(',')
-    if month_str not in months:
+    for token in elements:
+        t = token.lower()
+        
+        # Check if this token is a known month
+        if t in months and parsed_month is None:
+            parsed_month = months[t]
+            continue
+        
+        # Check if this token is a 4-digit year
+        if len(token) == 4 and token.isdigit() and parsed_year is None:
+            parsed_year = token
+            continue
+        
+        # Otherwise, try to interpret it as a day (1-31)
+        if token.isdigit() and parsed_day is None:
+            parsed_day = token
+            continue
+        
+        # If we haven't assigned it to month/day/year, we can't parse
         return None
-
-    month = months[elements[0].lower()].strip()
-    date = elements[1][:-1].strip()
-    year = elements[2].strip()
-
-    formatted_date = year + "-" + month + "-" + date
-
-    return formatted_date
+    
+    # We must have all three components
+    if not (parsed_month and parsed_day and parsed_year):
+        return None
+    
+    # Build the result as "YYYY-MM-DD"
+    return f"{parsed_year}-{parsed_month}-{parsed_day}"
 
 def category_is_language(category):
     languages = ['english',

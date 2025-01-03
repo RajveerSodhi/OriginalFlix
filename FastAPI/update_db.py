@@ -38,10 +38,10 @@ def update_database():
                 wiki_content.return_NF_films_2015_to_2017,
                 wiki_content.return_NF_films_2018,
                 wiki_content.return_NF_films_2019,
-                wiki_content.return_NF_films_2020,
-                wiki_content.return_NF_films_2021,
-                wiki_content.return_NF_films_2022,
-                wiki_content.return_NF_films_2023,
+                # wiki_content.return_NF_films_2020,
+                # wiki_content.return_NF_films_2021,
+                # wiki_content.return_NF_films_2022,
+                # wiki_content.return_NF_films_2023,
                 wiki_content.return_NF_films_2024,
                 wiki_content.return_NF_films_since_2025
             ]
@@ -111,7 +111,7 @@ def update_database():
             ],
             # Films
             [
-                wiki_content.return_Z5_films
+                # wiki_content.return_Z5_films
             ]
         ],
         # Peacock
@@ -180,7 +180,7 @@ def update_database():
 
             for fn in type:
 
-                print(f"Processing function...")
+                print(f"Processing function {fn.__name__}...")
 
                 html_content = fn()
         
