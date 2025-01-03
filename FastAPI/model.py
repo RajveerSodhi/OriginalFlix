@@ -5,7 +5,7 @@ class OriginalContent(Base):
     __tablename__ = "originalcontent"
 
     id = Column(Integer, primary_key=True, index=True, autoincrement=True)
-    title = Column(String, unique=True, nullable=False)
+    title = Column(String, nullable=False)
     type = Column(String, nullable=False)
     service = Column(String, nullable=False)
     release_date = Column(Date, nullable=True, default="2035-01-01")
