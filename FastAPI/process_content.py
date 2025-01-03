@@ -1,5 +1,4 @@
 from bs4 import BeautifulSoup
-import wiki_content
 
 def extract_tables(html):
     soup = BeautifulSoup(html, 'html.parser')
@@ -8,7 +7,7 @@ def extract_tables(html):
     
     for table in tables:
         # Extract the category from the previous heading
-        heading_tag = table.find_previous(['h2', 'h3', 'h4', 'h5', 'h6'])
+        heading_tag = table.find_previous(['h3', 'h2', 'h4'])
         category = heading_tag.get_text(strip=True) if heading_tag else "Uncategorized"
 
         # Remove superscripts
@@ -23,7 +22,7 @@ def extract_tables(html):
         
         # Extract rows
         rows = []
-        for tr in table.find_all('tr')[1:]:  # Skip header row
+        for tr in table.find_all('tr')[1:]:
             cells = tr.find_all(['td', 'th'])
             row = [cell.get_text(strip=True) for cell in cells]
             if row:
@@ -49,6 +48,7 @@ def get_column_index(names, headers):
 def process_table(table):
     headers = table.get('headers', [])
     rows = table.get('rows', [])
+    category = table.get('category', 'Uncategorized')
     
     # Get indices of relevant columns
     title_idx = get_column_index(['Title'], headers)
@@ -68,6 +68,7 @@ def process_table(table):
         # Skip rows that do not have all required columns
         if len(row) < len(headers):
             continue
+
         # Extract 'Release date' and 'Runtime' values
         release_date = None
         runtime = None
@@ -76,7 +77,7 @@ def process_table(table):
         if runtime_idx != -1:
             runtime = row[runtime_idx]
 
-        # Filter out rows with 'TBA' in 'Release date' or 'Runtime'
+        # Filter out rows with 'TBA'
         valid_row = True
         if release_date:
             if release_date.upper() == 'TBA':
@@ -112,12 +113,15 @@ def process_table(table):
         else:
             status = None
         
+        final_headers.append('Category')
+
         cleaned_row = [
             row[title_idx],
             formatted_date,
             genre,
             language,
-            status
+            status,
+            category
         ]
         
         cleaned_rows.append(cleaned_row)
@@ -150,4 +154,5 @@ def format_date(rawDate):
     year = elements[2].strip()
 
     formatted_date = year + "-" + month + "-" + date
+
     return formatted_date

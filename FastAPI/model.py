@@ -9,6 +9,7 @@ class OriginalContent(Base):
     type = Column(String, nullable=False)
     service = Column(String, nullable=False)
     language = Column(String, nullable=True, default="Unknown")
-    release_date = Column(Date, nullable=True)
+    release_date = Column(Date, nullable=True, default="2035-01-01")
     genre = Column(String, nullable=True, default="Unknown")
     status = Column(String, nullable=True, default="NA")
+    category = Column(String, nullable=True, default="Uncategorized")
