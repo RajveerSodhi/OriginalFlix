@@ -1,9 +1,11 @@
+import os
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, declarative_base
 
 # DATABASE_URL = "postgresql://postgres:root@localhost:5433/originalflix"
+
 DATABASE_URL = (
-    "postgresql://rajveersodhi:Postgres!"
+    f"postgresql://rajveersodhi:{os.getenv('POSTGRES_PASSWORD')}"
     "@originalflix.postgres.database.azure.com:5432/postgres?sslmode=require"
 )
 
