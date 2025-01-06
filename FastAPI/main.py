@@ -1,6 +1,6 @@
 from datetime import date
 from fastapi import FastAPI, Query, HTTPException, Depends
-from typing import List, Annotated
+from typing import List, Annotated, Optional
 from sqlalchemy.orm import Session
 from pydantic import BaseModel
 from database import SessionLocal, engine
@@ -52,21 +52,87 @@ Base.metadata.create_all(bind=engine)
 def root():
     return {"message": "Welcome to the OriginalFlix API!"}
 
-# get List of Originals
-@app.get("/originals", response_model=List[OriginalContentModel], summary="Get List of Originals")
-async def read_netflix_originals(db: db_dependency, skip: int = 0, limit: int = 100):
-    originals = db.query(OriginalContent).offset(skip).limit(limit).all()
-    return originals
+
+# @app.get("/get-originals", response_model=List[OriginalContentModel])
+# async def get_originals(
+#     service: Optional[str] = Query(None, description="Filter by service (e.g. Netflix, Hulu)"),
+#     skip: int = 0,
+#     limit: int = 100,
+#     db: Session = db_dependency
+# ):
+#     """
+#     Returns a list of OriginalContent items, optionally filtered by 'service'.
+#     Paginated by skip & limit.
+#     """
+#     query = db.query(OriginalContent)
+#     if service:
+#         query = query.filter(OriginalContent.service.ilike(service))
+    
+#     originals = query.offset(skip).limit(limit).all()
+#     return originals
 
 
-# Check if a title exists in the database
-@app.get("/check-title/", summary="Check Title in Originals")
-def check_title(title: str = Query(..., description="Title of the program to check")):
-    db = SessionLocal()
-    try:
-        # Query the database to see if the title exists
-        result = db.query(OriginalContent).filter(OriginalContent.title.ilike(title)).first()
-        exists = bool(result)
-        return {"title": title, "exists": exists}
-    finally:
-        db.close()
+# @app.get("/check-original")
+# def check_original(
+#     title: str = Query(..., description="Title of the program to check"),
+#     service: Optional[str] = Query(None, description="Optional service to filter by"),
+#     db: Session = db_dependency
+# ):
+#     """
+#     Checks if a record with 'title' (and optionally 'service') exists in the DB.
+#     Returns a JSON { 'title': ..., 'service': ..., 'exists': True/False }
+#     """
+#     query = db.query(OriginalContent)
+
+#     # match title case-insensitively
+#     query = query.filter(OriginalContent.title.ilike(title))  
+    
+#     if service:
+#         query = query.filter(OriginalContent.service.ilike(service))
+    
+#     exists = bool(query.first())
+#     return {"title": title, "service": service, "exists": exists}
+
+
+# @app.get("/search-originals", response_model=List[OriginalContentModel])
+# def search_originals(
+#     # Query parameters for each column, all optional
+#     title: Optional[str] = None,
+#     service: Optional[str] = None,
+#     type: Optional[str] = None,
+#     language: Optional[str] = None,
+#     status: Optional[str] = None,
+#     category: Optional[str] = None,
+#     genre: Optional[str] = None,
+#     # For example, release_date could also be filtered with min/max if needed
+#     skip: int = 0,
+#     limit: int = 100,
+#     db: Session = db_dependency
+# ):
+#     """
+#     Allows flexible searching across columns. 
+#     Example usage:
+#         /search-originals?title=heist&service=netflix&language=english
+#     """
+#     query = db.query(OriginalContent)
+
+#     if title:
+#         # partial match for title (contains)
+#         query = query.filter(OriginalContent.title.ilike(f"%{title}%"))
+#     if service:
+#         query = query.filter(OriginalContent.service.ilike(service))
+#     if type:
+#         query = query.filter(OriginalContent.type.ilike(type))
+#     if language:
+#         query = query.filter(OriginalContent.language.ilike(language))
+#     if status:
+#         query = query.filter(OriginalContent.status.ilike(status))
+#     if category:
+#         query = query.filter(OriginalContent.category.ilike(category))
+#     if genre:
+#         query = query.filter(OriginalContent.genre.ilike(genre))
+
+#     # You could add more advanced date filters as well if desired
+
+#     results = query.offset(skip).limit(limit).all()
+#     return results
