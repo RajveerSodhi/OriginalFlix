@@ -1,6 +1,6 @@
 from datetime import date
 from fastapi import FastAPI, Query, HTTPException, status, Depends
-from typing import List, Annotated, Optional
+from typing import List, Optional
 from sqlalchemy.orm import Session
 from pydantic import BaseModel
 from database import SessionLocal, engine
@@ -50,7 +50,7 @@ Base.metadata.create_all(bind=engine)
 # Root endpoint
 @app.get("/", summary="Root Endpoint")
 def root():
-    return {"message": "Welcome to the OriginalFlix API! Check originalflix.dev for more info."}
+    return {"message": "Welcome to the OriginalFlix API! Check api.originalflix.dev/docs for more info."}
 
 # get available services
 @app.get("/get-services", response_model=List[str])
@@ -64,14 +64,13 @@ def get_services(db: Session = Depends(get_db)):
 # get OriginalContent items filtered by service
 @app.get("/get-originals", response_model=List[OriginalContentModel])
 def get_originals(
-    service: str = Query(..., description="Filter by service"),
+    service: str = Query(..., description="Filter by streaming service"),
     skip: int = 0,
     limit: int = 100,
     db: Session = Depends(get_db)
 ):
     """
-    Returns a list of movie/show items for a given 'service'.
-    Paginated by skip & limit.
+    Returns a list of movie/show items for a given streaming service.
     """
 
     if skip < 0:
@@ -96,7 +95,7 @@ def get_originals(
 @app.get("/is-original")
 def is_original(
     title: str = Query(..., description="Title of the movie/show to check"),
-    service: str = Query(..., description="Optional service to filter by"),
+    service: str = Query(..., description="Streaming service directory to check in"),
     db: Session = Depends(get_db)
 ):
     """
@@ -149,24 +148,22 @@ def get_service(
 # search for OriginalContent items
 @app.get("/search-originals", response_model=List[OriginalContentModel])
 def search_originals(
-    title: Optional[str] = None,
-    service: Optional[str] = None,
-    type: Optional[str] = None,
-    language: Optional[str] = None,
-    status: Optional[str] = None,
-    category: Optional[str] = None,
-    genre: Optional[str] = None,
-    release_date: Optional[date] = None,
-    min_release_date: Optional[date] = None,
-    max_release_date: Optional[date] = None,
+    title: Optional[str]= Query(None, description = "Filter by title"),
+    service: Optional[str] = Query(None, description = "Filter by streaming service"),
+    type: Optional[str] = Query(None, description = "Filter by 'Movie' or 'Show'"),
+    language: Optional[str] = Query(None, description = "Filter by language"),
+    status: Optional[str] = Query(None, description = "Filter by status"),
+    category: Optional[str] = Query(None, description = "Filter by category"),
+    genre: Optional[str] = Query(None, description = "Filter by genre"),
+    release_date: Optional[date] = Query(None, description = "Filter by release date"),
+    min_release_date: Optional[date] = Query(None, description = "Filter content to release date uptil this date"),
+    max_release_date: Optional[date] = Query(None, description = "Filter content to release date after this date"),
     skip: int = 0,
     limit: int = 100,
     db: Session = Depends(get_db)
 ):
     """
-    Allows flexible searching across columns. 
-    Example usage:
-        /search-originals?title=heist&service=netflix&language=english
+    Allows flexible searching across columns in the database. Filtering is based on "is like" comparisons.
     """
 
     if skip < 0:
