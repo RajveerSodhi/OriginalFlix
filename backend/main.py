@@ -96,11 +96,11 @@ def get_originals(
 @app.get("/is-original")
 def is_original(
     title: str = Query(..., description="Title of the movie/show to check"),
-    service: Optional[str] = Query(None, description="Optional service to filter by"),
+    service: str = Query(..., description="Optional service to filter by"),
     db: Session = Depends(get_db)
 ):
     """
-    Checks if a record with 'title' (and optionally 'service') exists in the DB.
+    Checks if a given title is an original for a given service.
     Returns a JSON { 'title': ..., 'service': ..., 'exists': True/False }
     """
     query = db.query(OriginalContent)
