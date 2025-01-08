@@ -1,7 +1,5 @@
-os
 sqlalchemy
 sqlalchemy.orm
-datetime
 fastapi
 pydantic
 uvicorn
