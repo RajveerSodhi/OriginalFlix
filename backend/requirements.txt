@@ -1,0 +1,10 @@
+os
+sqlalchemy
+sqlalchemy.orm
+datetime
+fastapi
+pydantic
+uvicorn
+typing
+beautifulsoup4
+wikipedia
