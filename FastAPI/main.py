@@ -48,9 +48,9 @@ Base.metadata.create_all(bind=engine)
 
 
 # Root endpoint
-@app.get("/", summary="Root Endpoint")
-def root():
-    return {"message": "Welcome to the OriginalFlix API! Check api.originalflix.dev/docs for more info."}
+# @app.get("/", summary="Root Endpoint")
+# def root():
+#     return {"message": "Welcome to the OriginalFlix API! Check api.originalflix.dev/docs for more info."}
 
 # get available services
 @app.get("/get-services", response_model=List[str])
