@@ -6,4 +6,3 @@ uvicorn
 typing
 beautifulsoup4
 wikipedia
-dotenv
