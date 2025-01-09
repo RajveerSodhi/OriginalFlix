@@ -80,6 +80,7 @@ def get_originals(
 ):
     """
     Returns a list of movie/show items for a given streaming service.
+    The list of available services can be retrieved by running the /get-services endpoint.
     """
 
     if skip < 0:
