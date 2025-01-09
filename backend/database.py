@@ -1,26 +1,11 @@
-from os import environ as env
-# from os import getenv
-# from dotenv import load_dotenv
+from os import getenv
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, declarative_base
 
-# load_dotenv()
+DATABASE_URL = getenv("AZURE_DATABASE_URL")
 
-# DATABASE_URL = f"postgresql://{getenv('LOCAL_POSTGRES_ADMIN')}:{getenv('LOCAL_POSTGRES_PASSWORD')}@{getenv('LOCAL_POSTGRES_HOST')}:{getenv('LOCAL_POSTGRES_PORT')}/{getenv('LOCAL_POSTGRES_DB')}"
-# DATABASE_URL = f"postgresql://{env['LOCAL_POSTGRES_ADMIN']}:{env['LOCAL_POSTGRES_PASSWORD']}@{env['LOCAL_POSTGRES_HOST']}:{env['LOCAL_POSTGRES_PORT']}/{env['LOCAL_POSTGRES_DB']}"
-
-# DATABASE_URL = (
-#     f"postgresql://{getenv('AZURE_POSTGRES_ADMIN')}:{getenv('AZURE_POSTGRES_PASSWORD')}"
-#     f"@{getenv('AZURE_POSTGRES_HOST')}:{getenv('AZURE_POSTGRES_PORT')}/{getenv('AZURE_POSTGRES_DB')}?sslmode=require"
-# )
-
-# DATABASE_URL = (
-#     f"postgresql://{env['AZURE_POSTGRES_ADMIN']}:{env['AZURE_POSTGRES_PASSWORD']}"
-#     f"@{env['AZURE_POSTGRES_HOST']}:{env['AZURE_POSTGRES_PORT']}/{env['AZURE_POSTGRES_DB']}?sslmode=require"
-# )
-
-# DATABASE_URL = "postgresql://postgres:root@localhost:5433/originalflix"
-DATABASE_URL = "postgresql://rajveersodhi:Postgres!@originalflix.postgres.database.azure.com:5432/postgres?sslmode=require"
+if not DATABASE_URL:
+    raise ValueError("AZURE_DATABASE_URL is not set in environment variables")
 
 engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
