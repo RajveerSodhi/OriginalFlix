@@ -9,10 +9,27 @@ from database import SessionLocal, engine
 from model import OriginalContent, Base
 
 
-app = FastAPI(title="OriginalFlix API", version="1.0")
+app = FastAPI(
+    title="OriginalFlix API",
+    version="1.0",
+    root_path="/v1",
+    description=""",
+
+    Welcome to the OriginalFlix API!
+
+    This API allows users to:
+    - Retrieve a catalog of original movies and shows available across multiple streaming platforms.
+    - Filter, search, and verify whether a specific title is an original on a particular service.
+    - Get the service a title belongs to.
+
+    No authentication required!
+    Deployed using Azure Flexible Postgres, Heroku, and Vercel.
+
+    The base URL for all endpoints is www.api.originalflix.dev or api.originalflix.dev
+    """
+)
 
 origins = [
-    "*",
     "https://www.api.originalflix.dev",
     "https://api.originalflix.dev",
     "http://localhost:8000",
@@ -27,6 +44,9 @@ app.add_middleware(
 )
 
 class OriginalContentBase(BaseModel):
+    """
+    Base model representing the core fields for original content.
+    """
     title: str
     type: str
     language: str
@@ -34,6 +54,9 @@ class OriginalContentBase(BaseModel):
     genre: str
 
 class OriginalContentModel(OriginalContentBase):
+    """
+    Model representing original content including its database ID.
+    """
     id: int
 
     class Config:
@@ -52,35 +75,41 @@ Base.metadata.create_all(bind=engine)
 
 
 # Root endpoint
-@app.get("/", summary="Root Endpoint")
+@app.get("/", summary="Root Endpoint", include_in_schema=False)
 def root():
-    return {"message": "Welcome to the OriginalFlix API! Check api.originalflix.dev/docs for more info."}
-
-# Handle favicon requests
-@app.get("/favicon.ico", include_in_schema=False)
-async def favicon():
-    return {"message": "No favicon available"}
+    return {"message": "Welcome to the OriginalFlix API 1.0! Check api.originalflix.dev/docs for more info."}
 
 # get available services
-@app.get("/get-services", response_model=List[str])
+@app.get("/get-available-services", response_model=List[str], summary="Get Available Services")
 def get_services(db: Session = Depends(get_db)):
     """
-    Returns a list of unique services available in the database.
+    Retrieve all unique streaming services available in the database. Use this generated list to get the valid services you can filter with in other endpoints.
+
+    ### Response:
+    - A list of streaming services (e.g., Netflix, Hulu, Amazon Prime).
+
+    ### Example Request:
+    `GET https://api.originalflix.dev/get-available-services`
     """
     services = db.query(OriginalContent.service).distinct().all()
-    return [service for service, in services]
+    return {"services": [service for service, in services]}
 
 # get OriginalContent items filtered by service
-@app.get("/get-originals", response_model=List[OriginalContentModel])
+@app.get("/get-originals", response_model=List[OriginalContentModel], summary="Get Originals by Service")
 def get_originals(
-    service: str = Query(..., description="Filter by streaming service"),
-    skip: int = 0,
-    limit: int = 100,
+    service: str = Query(..., description="Filter by the name of the streaming service (case-insensitive)"),
+    skip: int = Query(0, ge=0, description="Number of records to skip for pagination"),
+    limit: int = Query(100, ge=1, description="Maximum number of records to return"),
     db: Session = Depends(get_db)
 ):
     """
-    Returns a list of movie/show items for a given streaming service.
-    The list of available services can be retrieved by running the /get-services endpoint.
+    Retrieve original movies and tv shows for a specific streaming service. The list of available services can be retrieved by running the `/get-available-services` endpoint.
+    
+    ### Response:
+    - A list of original content items (movies/shows) belonging to the specified service.
+
+    ### Example Request:
+    `GET https://api.originalflix.dev/get-originals?service=Netflix&skip=0&limit=5`
     """
 
     if skip < 0:
@@ -102,7 +131,7 @@ def get_originals(
     return originals
 
 # check if a given title is an original for a given service
-@app.get("/is-original")
+@app.get("/is-original", summary="Check if Title is an Original")
 def is_original(
     title: str = Query(..., description="Title of the movie/show to check"),
     service: str = Query(..., description="Streaming service directory to check in"),
@@ -110,7 +139,15 @@ def is_original(
 ):
     """
     Checks if a given title is an original for a given service.
-    Returns a JSON { 'title': ..., 'service': ..., 'exists': True/False }
+
+    ### Response:
+    - JSON object with:
+    - `title`: The queried title.
+    - `service`: The queried service.
+    - `exists`: Boolean indicating whether the title exists as an original.
+
+    ### Example Request:
+    `GET https://api.originalflix.dev/is-original?title=Stranger%20Things&service=Netflix`
     """
     query = db.query(OriginalContent)
 
@@ -123,14 +160,20 @@ def is_original(
     return {"title": title, "service": service, "exists": exists}
 
 # get the service of an given title
-@app.get("/get-service")
+@app.get("/get-title-service", summary="Get Service of a Title")
 def get_service(
-    title: str = Query(..., description = "Title of the movie/show to find"),
+    title: str = Query(..., description = "Title of the movie/show to find the service for"),
     db: Session = Depends(get_db)
 ):
     """
-    Returns the service of a given title if it exists in the database.
-    Returns a JSON { 'service': ... }
+    Returns the streaming service where a specified title is available if it exists in the database.
+    
+    ### Response:
+    JSON object with:
+    - `service`: Name of the streaming service where the title is available.
+
+    ### Example Request:
+    `GET https://api.originalflix.dev/get-title-service?title=The%20Crown`
     """
     if not title.strip():
         raise HTTPException(
@@ -139,7 +182,6 @@ def get_service(
         )
 
     query = db.query(OriginalContent)
-
     query = query.filter(OriginalContent.title.ilike(title))
 
     result = query.first()
@@ -156,24 +198,30 @@ def get_service(
 
 
 # search for OriginalContent items
-@app.get("/search-originals", response_model=List[OriginalContentModel])
+@app.get("/search-originals", response_model=List[OriginalContentModel], summary="Search Originals Database")
 def search_originals(
-    title: Optional[str]= Query(None, description = "Filter by title"),
+    title: Optional[str]= Query(None, description = "Search by title (partial match)"),
     service: Optional[str] = Query(None, description = "Filter by streaming service"),
-    type: Optional[str] = Query(None, description = "Filter by 'Movie' or 'Show'"),
+    type: Optional[str] = Query(None, description = "Filter by type - 'Movie' or 'Show'"),
     language: Optional[str] = Query(None, description = "Filter by language"),
     status: Optional[str] = Query(None, description = "Filter by status"),
     category: Optional[str] = Query(None, description = "Filter by category"),
     genre: Optional[str] = Query(None, description = "Filter by genre"),
-    release_date: Optional[date] = Query(None, description = "Filter by release date"),
-    min_release_date: Optional[date] = Query(None, description = "Filter content to release date uptil this date"),
-    max_release_date: Optional[date] = Query(None, description = "Filter content to release date after this date"),
-    skip: int = 0,
-    limit: int = 100,
+    release_date: Optional[date] = Query(None, description = "Filter by exact release date (YYYY-MM-DD)"),
+    min_release_date: Optional[date] = Query(None, description = "Filter content to release date uptil this date (YYYY-MM-DD)"),
+    max_release_date: Optional[date] = Query(None, description = "Filter content to release date after this date (YYYY-MM-DD)"),
+    skip: int = Query(0, ge=0, description="Number of records to skip for pagination"),
+    limit: int = Query(100, ge=1, description="Maximum number of records to return"),
     db: Session = Depends(get_db)
 ):
     """
-    Allows flexible searching across columns in the database. Filtering is based on "is like" comparisons.
+    Allows flexible searching for original movies and tv shows across columns in the database. Filtering is based on "is like" comparisons.
+
+    ### Response:
+    - A list of original content items matching the search criteria.
+
+    ### Example Request:
+    `GET https://api.originalflix.dev/search-originals?title=the&service=Netflix&genre=Drama&min_release_date=2015-01-01&max_release_date=2020-12-31&limit=10`
     """
 
     if skip < 0:
