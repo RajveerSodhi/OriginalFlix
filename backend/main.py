@@ -4,8 +4,8 @@ from sqlalchemy.orm import Session
 from fastapi import FastAPI, Query, HTTPException, status, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-from .database import SessionLocal, engine
-from .model import OriginalContent, Base
+from database import SessionLocal, engine
+from model import OriginalContent, Base
 
 
 app = FastAPI(title="OriginalFlix API", version="1.0")
