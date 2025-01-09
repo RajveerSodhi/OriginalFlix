@@ -3,14 +3,20 @@ from typing import List, Optional
 from sqlalchemy.orm import Session
 from fastapi import FastAPI, Query, HTTPException, status, Depends
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 from database import SessionLocal, engine
 from model import OriginalContent, Base
 
 
-app = FastAPI(title="OriginalFlix API", version="1.0")
+app = FastAPI(title="OriginalFlix API", version="1.0", root_path="/api")
 
-origins = ["*"]
+origins = [
+    "*",
+    "https://www.api.originalflix.dev",
+    "https://api.originalflix.dev",
+    "http://localhost:8000",
+]
 
 app.add_middleware(
     CORSMiddleware,
@@ -49,6 +55,16 @@ Base.metadata.create_all(bind=engine)
 @app.get("/", summary="Root Endpoint")
 def root():
     return {"message": "Welcome to the OriginalFlix API! Check api.originalflix.dev/docs for more info."}
+
+# Handle favicon requests
+@app.get("/favicon.ico", include_in_schema=False)
+async def favicon():
+    return {"message": "No favicon available"}
+
+# Health check
+@app.get("/health", include_in_schema=False)
+def health_check():
+    return {"status": "healthy"}
 
 # get available services
 @app.get("/get-services", response_model=List[str])
@@ -206,3 +222,10 @@ def search_originals(
 
     results = query.offset(skip).limit(limit).all()
     return results
+
+@app.exception_handler(Exception)
+async def generic_exception_handler(request, exc):
+    return JSONResponse(
+        status_code=500,
+        content={"message": "An internal error occurred. Please try again later."},
+    )
