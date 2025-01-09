@@ -1,11 +1,12 @@
 from datetime import date
-from fastapi import FastAPI, Query, HTTPException, status, Depends
 from typing import List, Optional
 from sqlalchemy.orm import Session
-from pydantic import BaseModel
-from database import SessionLocal, engine
-from model import OriginalContent, Base
+from fastapi import FastAPI, Query, HTTPException, status, Depends
 from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
+from .database import SessionLocal, engine
+from .model import OriginalContent, Base
+
 
 app = FastAPI(title="OriginalFlix API", version="1.0")
 
@@ -41,16 +42,13 @@ def get_db():
     finally:
         db.close()
 
-
-# db_dependency = Annotated[Session, Depends(get_db)]
-
 Base.metadata.create_all(bind=engine)
 
 
 # Root endpoint
-# @app.get("/", summary="Root Endpoint")
-# def root():
-#     return {"message": "Welcome to the OriginalFlix API! Check api.originalflix.dev/docs for more info."}
+@app.get("/", summary="Root Endpoint")
+def root():
+    return {"message": "Welcome to the OriginalFlix API! Check api.originalflix.dev/docs for more info."}
 
 # get available services
 @app.get("/get-services", response_model=List[str])
