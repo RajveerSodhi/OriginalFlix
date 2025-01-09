@@ -14,10 +14,12 @@ from sqlalchemy.orm import sessionmaker, declarative_base
 #     f"@{getenv('AZURE_POSTGRES_HOST')}:{getenv('AZURE_POSTGRES_PORT')}/{getenv('AZURE_POSTGRES_DB')}?sslmode=require"
 # )
 
-DATABASE_URL = (
-    f"postgresql://{env['AZURE_POSTGRES_ADMIN']}:{env['AZURE_POSTGRES_PASSWORD']}"
-    f"@{env['AZURE_POSTGRES_HOST']}:{env['AZURE_POSTGRES_PORT']}/{env['AZURE_POSTGRES_DB']}?sslmode=require"
-)
+# DATABASE_URL = (
+#     f"postgresql://{env['AZURE_POSTGRES_ADMIN']}:{env['AZURE_POSTGRES_PASSWORD']}"
+#     f"@{env['AZURE_POSTGRES_HOST']}:{env['AZURE_POSTGRES_PORT']}/{env['AZURE_POSTGRES_DB']}?sslmode=require"
+# )
+
+DATABASE_URL = "postgresql://postgres:root@localhost:5433/originalflix"
 
 engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
