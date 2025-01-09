@@ -3,7 +3,7 @@ from typing import List, Optional
 from sqlalchemy.orm import Session
 from fastapi import FastAPI, Query, HTTPException, status, Depends
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, RedirectResponse
 from pydantic import BaseModel
 from database import SessionLocal, engine
 from model import OriginalContent, Base
@@ -77,7 +77,8 @@ Base.metadata.create_all(bind=engine)
 # Root endpoint
 @app.get("/", summary="Root Endpoint", include_in_schema=False)
 def root():
-    return {"message": "Welcome to the OriginalFlix API 1.0! Check api.originalflix.dev/docs for more info."}
+    response = RedirectResponse(url='/docs')
+    return response
 
 # get available services
 @app.get("/get-available-services", response_model=List[str], summary="Get Available Services")
