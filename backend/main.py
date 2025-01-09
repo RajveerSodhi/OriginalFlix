@@ -5,7 +5,7 @@ from fastapi import FastAPI, Query, HTTPException, status, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
-# from database import SessionLocal, engine
+from database import SessionLocal, engine
 from model import OriginalContent, Base
 
 
@@ -40,15 +40,15 @@ class OriginalContentModel(OriginalContentBase):
         from_attributes = True
 
 
-# # get DB session
-# def get_db():
-#     db = SessionLocal()
-#     try:
-#         yield db
-#     finally:
-#         db.close()
+# get DB session
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
 
-# Base.metadata.create_all(bind=engine)
+Base.metadata.create_all(bind=engine)
 
 
 # Root endpoint
