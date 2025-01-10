@@ -218,6 +218,12 @@ def search_originals(
     """
     Allows flexible searching for original movies and tv shows across columns in the database. Filtering is based on "is like" comparisons.
 
+    ### About the Category Column:
+    OriginalFlix works by scraping several Wikipedia pages regularly to stay up to date about the original content offered by streaming services. You can find more information about this via the About page. The `Category` column of the OriginalFlix database consists of titles given to the various tables present in the Wikipedia page.
+    
+    Sometimes, the title consists of a broader genre that a piece of content falls under. In that case, it is retained in the category column. For example, for a movie with genre "Investigative Thriller," the category may be "Thriller." In other cases, the category consists of the language of the pieces of content listed in the corresponding table. In this case, OriginalFlix recognizes the language categorization and updates the language column of the database instead, leaving the category entry be "Uncategorized." Rarely, this column might include metadata about the content.
+    
+
     ### Response:
     - A list of original content items matching the search criteria.
 
