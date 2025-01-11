@@ -89,7 +89,7 @@ def get_services(db: Session = Depends(get_db)):
     `GET https://api.originalflix.dev/get-available-services`
     """
     services = db.query(OriginalContent.service).distinct().all()
-    return {"services": [service for service, in services]}
+    return [service for service, in services]
 
 # get OriginalContent items filtered by service
 @app.get("/get-originals", response_model=List[OriginalContentModel], summary="Get Originals by Service")
