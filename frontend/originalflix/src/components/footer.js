@@ -2,7 +2,7 @@ import { FaArrowRight } from "react-icons/fa";
 
 function Footer() {
     return (
-        <footer className="text-center p-4 flex flex-row justify-start items-center">
+        <footer className="text-center p-4 flex flex-row justify-start items-center mt-8">
             <a href="mailto:rajveersodhi03@gmail.com" target="_blank" className="flex flex-col p-4 justify-center items-center aspect-square h-36 bg-pink rounded-3xl shadow-md hover:shadow-lg hover:scale-105 transition-all duration-300 ease-in-out">
                 <span className="text-[3rem]">
                     👋
