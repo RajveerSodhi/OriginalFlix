@@ -5,8 +5,12 @@
 body,html {
     margin: 0;
     padding: 0;
-    background-color: red;
 }
+
+body {
+    @apply bg-background;
+}
+
 * {
     box-sizing: border-box;
 }
