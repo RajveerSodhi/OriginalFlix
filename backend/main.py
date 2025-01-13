@@ -48,6 +48,8 @@ class OriginalContentBase(BaseModel):
     language: str
     release_date: date
     genre: str
+    status: str
+    category: str
 
 class OriginalContentModel(OriginalContentBase):
     """
@@ -101,9 +103,12 @@ def get_originals(
 ):
     """
     Retrieve original movies and tv shows for a specific streaming service. The list of available services can be retrieved by running the `/get-available-services` endpoint.
+
+    ### Release Dates
+    Dates are formatted as YYYY-MM-DD. For movies and TV shows whose release dates are unavailable, the default date is `2035-01-01`. For TV shows, the release date is set to the date of the premiere of S01E01.
     
     ### Response:
-    - A list of original content items (movies/shows) belonging to the specified service.
+    A list of original content items (movies/shows) belonging to the specified service.
 
     ### Example Request:
     `GET https://api.originalflix.dev/get-originals?service=Netflix&skip=0&limit=5`
@@ -138,7 +143,7 @@ def is_original(
     Checks if a given title is an original for a given service.
 
     ### Response:
-    - JSON object with:
+    JSON object with:
     - `title`: The queried title.
     - `service`: The queried service.
     - `exists`: Boolean indicating whether the title exists as an original.
@@ -218,10 +223,9 @@ def search_originals(
     OriginalFlix works by scraping several Wikipedia pages regularly to stay up to date about the original content offered by streaming services. You can find more information about this via the About page. The `Category` column of the OriginalFlix database consists of titles given to the various tables present in the Wikipedia page.
     
     Sometimes, the title consists of a broader genre that a piece of content falls under. In that case, it is retained in the category column. For example, for a movie with genre "Investigative Thriller," the category may be "Thriller." In other cases, the category consists of the language of the pieces of content listed in the corresponding table. In this case, OriginalFlix recognizes the language categorization and updates the language column of the database instead, leaving the category entry be "Uncategorized." Rarely, this column might include metadata about the content.
-    
 
     ### Response:
-    - A list of original content items matching the search criteria.
+    A list of original content items matching the search criteria.
 
     ### Example Request:
     `GET https://api.originalflix.dev/search-originals?title=the&service=Netflix&genre=Drama&min_release_date=2015-01-01&max_release_date=2020-12-31&limit=10`
