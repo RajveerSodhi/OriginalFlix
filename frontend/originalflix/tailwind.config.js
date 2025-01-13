@@ -9,7 +9,11 @@ module.exports = {
       'background': '#f5f5f4',
       'white': '#fafaf9',
       'dark': '#292524',
-      'gray': '#a8a29d'
+      'gray': '#a8a29d',
+      'pink': '#f86363',
+      'orange': '#da9030',
+      'portfolio-bg': '#252525',
+      'coffee-bg': '#ffdd04'
     },
     extend: {},
   },
