@@ -3,7 +3,7 @@ from typing import List, Optional
 from sqlalchemy.orm import Session
 from fastapi import FastAPI, Query, HTTPException, status, Depends
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse, RedirectResponse
+from fastapi.responses import FileResponse, JSONResponse, RedirectResponse
 from pydantic import BaseModel
 from database import SessionLocal, engine
 from model import OriginalContent, Base
@@ -44,12 +44,14 @@ class OriginalContentBase(BaseModel):
     Base model representing the core fields for original content.
     """
     title: str
+    service: str
     type: str
     language: str
     release_date: date
     genre: str
     status: str
     category: str
+    source_id: int
 
 class OriginalContentModel(OriginalContentBase):
     """
@@ -71,6 +73,10 @@ def get_db():
 
 Base.metadata.create_all(bind=engine)
 
+# Favicon
+@app.get("/favicon.ico", include_in_schema=False)
+async def favicon():
+    return FileResponse("favicon.ico")
 
 # Root endpoint
 @app.get("/", summary="Root Endpoint", include_in_schema=False)
@@ -104,9 +110,29 @@ def get_originals(
     """
     Retrieve original movies and tv shows for a specific streaming service. The list of available services can be retrieved by running the `/get-available-services` endpoint.
 
-    ### Release Dates
+    ### Release Date:
     Dates are formatted as YYYY-MM-DD. For movies and TV shows whose release dates are unavailable, the default date is `2035-01-01`. For TV shows, the release date is set to the date of the premiere of S01E01.
     
+    ### Category Column
+    OriginalFlix works by scraping several Wikipedia pages regularly to stay up to date about the original content offered by streaming services. You can find more information about this via the About page. The `Category` column of the OriginalFlix database consists of titles given to the various tables present in the Wikipedia page.
+    
+    Sometimes, the title consists of a broader genre that a piece of content falls under. In that case, it is retained in the category column. For example, for a movie with genre "Investigative Thriller," the category may be "Thriller." In other cases, the category consists of the language of the pieces of content listed in the corresponding table. In this case, OriginalFlix recognizes the language categorization and updates the language column of the database instead, leaving the category entry be "Uncategorized." Rarely, this column might include metadata about the content.
+
+    ### Type:
+    There are 4 types that a record can have:
+    - `Show`: Original programming
+    - `EID Show`: Exclusive International Distribution programming
+    - `Movie`: Original films
+    - `EID Movie`: Exclusive International Distribution films
+
+    ### Status:
+    This column indicates the status assigned to movies and tv shows according to Wikipedia, such as notes on their completion or upcoming additions/seasons.
+
+    ### Source Id:
+    The integer listed in this column is the page id of the particular wikipedia article that was scraped to extract a particular record. This has been included for manual verification of the data, if required.
+
+    The Wikipedia article can be retrieved with the listed `source_id` via the URL: `https://en.wikipedia.org/w/index.php?curid=[source_id]`.
+
     ### Response:
     A list of original content items (movies/shows) belonging to the specified service.
 
@@ -218,11 +244,6 @@ def search_originals(
 ):
     """
     Allows flexible searching for original movies and tv shows across columns in the database. Filtering is based on "is like" comparisons.
-
-    ### About the Category Column:
-    OriginalFlix works by scraping several Wikipedia pages regularly to stay up to date about the original content offered by streaming services. You can find more information about this via the About page. The `Category` column of the OriginalFlix database consists of titles given to the various tables present in the Wikipedia page.
-    
-    Sometimes, the title consists of a broader genre that a piece of content falls under. In that case, it is retained in the category column. For example, for a movie with genre "Investigative Thriller," the category may be "Thriller." In other cases, the category consists of the language of the pieces of content listed in the corresponding table. In this case, OriginalFlix recognizes the language categorization and updates the language column of the database instead, leaving the category entry be "Uncategorized." Rarely, this column might include metadata about the content.
 
     ### Response:
     A list of original content items matching the search criteria.

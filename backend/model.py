@@ -13,3 +13,4 @@ class OriginalContent(Base):
     language = Column(String, nullable=True, default="Unknown")
     status = Column(String, nullable=True, default="NA")
     category = Column(String, nullable=True, default="Uncategorized")
+    source_id = Column(Integer, nullable=True, default=0)

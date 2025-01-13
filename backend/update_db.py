@@ -10,31 +10,28 @@ from process_content import extract_tables, process_table
 from model import OriginalContent, Base
 from database import DATABASE_URL
 
-# 1) Create engine & session
+# Create engine & session
 engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(bind=engine)
 
 def update_database():
-    """
-    Fetches all relevant Wikipedia pages for original content,
-    extracts & processes each table, then inserts unique rows
-    into the 'OriginalContent' table in PostgreSQL.
-    """
 
-    # 2) Define all the wiki functions you want to call
+    # Define all the wiki functions you want to call
     wiki_functions = [
         # Netflix
         [
             # Programming
             [
                 wiki_content.return_NF_programming,
-                wiki_content.return_NF_ended_programming,
+                wiki_content.return_NF_ended_programming
+            ],
+            # Exclusive International Distribution Programming
+            [
                 wiki_content.return_NF_exclusive_intl_distribution_programming
             ],
             # Films
             [
                 wiki_content.return_NF_standup_specials,
-                wiki_content.return_NF_exclusive_intl_distribution_films,
                 wiki_content.return_NF_films_2015_to_2017,
                 wiki_content.return_NF_films_2018,
                 wiki_content.return_NF_films_2019,
@@ -44,6 +41,10 @@ def update_database():
                 # wiki_content.return_NF_films_2023,
                 wiki_content.return_NF_films_2024,
                 wiki_content.return_NF_films_since_2025
+            ],
+            # Exclusive International Distribution Films
+            [
+                wiki_content.return_NF_exclusive_intl_distribution_films
             ]
         ],
         # Amazon Prime Video
@@ -52,12 +53,17 @@ def update_database():
             [
             wiki_content.return_APV_programming,
             wiki_content.return_APV_ended_programming,
-            wiki_content.return_APV_exclusive_intl_distribution_programming
+            ],
+            # Exclusive International Distribution Programming
+            [
+                wiki_content.return_APV_exclusive_intl_distribution_programming
             ],
             # Films
             [
             wiki_content.return_APV_films
-            ]
+            ],
+            # Exclusive International Distribution Films
+            []
         ],
         # Apple TV+
         [
@@ -65,10 +71,14 @@ def update_database():
             [
                 wiki_content.return_ATVP_programming
             ],
+            # Exclusive International Distribution Programming
+            [],
             # Films
             [
                 wiki_content.return_ATVP_films
-            ]
+            ],
+            # Exclusive International Distribution Films
+            []
         ],
         # Disney+
         [
@@ -76,10 +86,14 @@ def update_database():
             [
                 wiki_content.return_DP_programming
             ],
+            # Exclusive International Distribution Programming
+            [],
             # Films
             [
                 wiki_content.return_DP_films
-            ]
+            ],
+            # Exclusive International Distribution Films
+            []
         ],
         # Star
         [
@@ -87,21 +101,29 @@ def update_database():
             [
                 wiki_content.return_ST_programming
             ],
+            # Exclusive International Distribution Programming
+            [],
             # Films
-            [
-            ]
+            [],
+            # Exclusive International Distribution Films
+            []
         ],
         # Hulu
         [
             # Programming
             [
-                wiki_content.return_HL_programming,
+                wiki_content.return_HL_programming
+            ],
+            # Exclusive International Distribution Programming
+            [
                 wiki_content.return_HL_exclusive_intl_distribution_programming
             ],
             # Films
             [
                 wiki_content.return_HL_films
-            ]
+            ],
+            # Exclusive International Distribution Films
+            []
         ],
         # Zee5
         [
@@ -109,10 +131,14 @@ def update_database():
             [
                 wiki_content.return_Z5_programming
             ],
+            # Exclusive International Distribution Programming
+            [],
             # Films
             [
                 # wiki_content.return_Z5_films
-            ]
+            ],
+            # Exclusive International Distribution Films
+            []
         ],
         # Peacock
         [
@@ -120,9 +146,12 @@ def update_database():
             [
                 wiki_content.return_PC_programming
             ],
+            # Exclusive International Distribution Programming
+            [],
             # Films
-            [
-            ]
+            [],
+            # Exclusive International Distribution Films
+            []
         ],
         # Paramount+
         [
@@ -130,21 +159,29 @@ def update_database():
             [
                 wiki_content.return_PMP_programming
             ],
+            # Exclusive International Distribution Programming
+            [],
             # Films
             [
                 wiki_content.return_PMP_films
-            ]
+            ],
+            # Exclusive International Distribution Films
+            []
         ],
         # Max
         [
             # Programming
             [
                 wiki_content.return_MAX_programming,
+            ],
+            # Exclusive International Distribution Programming
+            [
                 wiki_content.return_MAX_exclusive_intl_distribution_programming
             ],
             # Films
-            [
-            ]
+            [],
+            # Exclusive International Distribution Films
+            []
         ],
         # Hotstar
         [
@@ -152,24 +189,28 @@ def update_database():
             [
                 wiki_content.return_HS_programming
             ],
+            # Exclusive International Distribution Programming
+            [],
             # Films
             [
                 wiki_content.return_HS_films
-            ]
+            ],
+            # Exclusive International Distribution Films
+            []
         ]
     ]
 
-    # 3) Create the table(s) if they don't already exist
+    # Create the table
     Base.metadata.create_all(bind=engine)
 
-    # 4) Initialize DB session
+    # Initialize DB session
     db: Session = SessionLocal()
 
-    # 5) Iterate over each wiki function to fetch & process data
+    # Iterate over each wiki function to fetch & process data
     services = ["Netflix", "Amazon Prime Video", "Apple TV+", "Disney+", "Star", "Hulu", "Zee5", "Peacock", "Paramount+", "Max", "Hotstar"]
     for service in wiki_functions:
         current_service = services.pop(0)
-        types = ["Show", "Movie"]
+        types = ["Show", "EID Show", "Movie", "EID Movie"]
 
         print(f"Updating {current_service} original content...")
 
@@ -182,7 +223,9 @@ def update_database():
 
                 print(f"Processing function {fn.__name__}...")
 
-                html_content = fn()
+                fn_result = fn()
+                html_content = fn_result[0]
+                source_id = fn_result()
         
                 # Extract all tables from this HTML
                 tables = extract_tables(html_content)
@@ -233,7 +276,8 @@ def update_database():
                             release_date=parsed_date,
                             genre=genre,
                             status=status,
-                            category=category
+                            category=category,
+                            source_id=source_id
                         )
                         
                         db.add(new_entry)
