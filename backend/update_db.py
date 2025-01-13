@@ -225,7 +225,7 @@ def update_database():
 
                 fn_result = fn()
                 html_content = fn_result[0]
-                source_id = fn_result()
+                source_id = fn_result[1]
         
                 # Extract all tables from this HTML
                 tables = extract_tables(html_content)
