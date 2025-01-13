@@ -1,11 +1,10 @@
+import DocsButton from "./docsButton";
+
 function Navbar() {
     return (
-        <nav className="bg-white">
-            <ul>
-                <li><a href="/">Home</a></li>
-                <li><a href="/docs">Docs</a></li>
-                <li><a href="/about">About</a></li>
-            </ul>
+        <nav className="flex flex-row justify-between items-center p-4">
+            <a href="/"><img src="/logo+name.png" alt="OriginalFlix name and logo" className="h-14"/></a>
+            <DocsButton />
         </nav>
     );
     }
