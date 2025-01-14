@@ -99,28 +99,39 @@ def custom_swagger_ui_html(
     custom_css = """
     <style>
         body, html {
-            background-color: rgb(245 245 244);
+            background-color: #f5f5f4 !important;
             margin: 0;
             overflow-x: hidden;
-            padding: 0;
+            padding: 0 0;
             color: #292524;
-            font-family: Arial, sans-serif;
+            font-family: "Readex Pro", sans-serif !important;
         }
+
+        .swagger-ui .title {
+            text-indent:-9999px;
+            font-family: "Readex Pro", sans-serif !important;
+        }
+
+        .swagger-ui .title:before {
+            text-indent:0;
+            content: "API Docs";
+            float:left;
+        }
+
         .swagger-ui .info {
-            background-color: #f86363 !important;
-            color: white !important;
-            padding: 20px !important;
-            border-radius: 16px !important;
+            background-color: none !important;
+            margin-left: 80px !important;
+            margin-right: 80px !important;
         }
 
         .swagger-ui .info code {
-            padding: 16px !important;
-            margin: -12px 0 !important;
+            padding: 24px 20px !important;
+            margin: -24px 0 -12px 0 !important;
+            color: #292524 !important;
+            font-family: "Readex Pro", sans-serif !important;
             border-radius: 12px !important;
-            color: white !important;
             font-weight: 400 !important;
-            font-family: Arial, sans-serif !important;
-            font-size: 1.15rem !important;
+            font-size: 1rem !important;
         }
 
         .swagger-ui .info a {
@@ -132,24 +143,44 @@ def custom_swagger_ui_html(
         }
 
         .swagger-ui .opblock {
+            margin-left: 80px !important;
+            margin-right: 80px !important;
             border-radius: 16px !important;
             background-color: white !important;
             padding: 4px 16px !important;
             border: 1px solid #ddd !important;
+            box-shadow: 2px 2px 4px 1px #DDDDDD;
+            font-family: "Readex Pro", sans-serif !important;
+            transition: scale 200ms ease-in-out, box-shadow 200ms ease-in-out;
+        }
+
+        .opblock-tag {
+            margin-left: 80px !important;
+            margin-right: 80px !important;
+            border-radius: 16px 16px 0 0 !important;
+            margin-bottom: 14px !important;
+        }
+
+        .swagger-ui .opblock:hover {
+            scale: 1.02;
+            box-shadow: 2px 2px 10px 2px #DDDDDD;
         }
 
         .opblock-summary-method {
             padding: 12px 4px !important;
             border-radius: 8px !important;
             background-color: #da9030 !important;
+            font-family: "Readex Pro", sans-serif !important;
         }
 
         .opblock-description-wrapper {
-            font-size: 1.1rem !important;
+            font-size: 1rem !important;
+            font-family: "Readex Pro", sans-serif !important;
         }
 
         .opblock-description-wrapper p {
-            font-size: 1.1rem !important;
+            font-size: 1rem !important;
+            font-family: "Readex Pro", sans-serif !important;
         }
 
         .models,
@@ -161,6 +192,7 @@ def custom_swagger_ui_html(
             border-radius: 25px !important;
             padding-top: 10px !important;
             padding-bottom: 10px !important;
+            font-family: "Readex Pro", sans-serif !important;
         }
 
         .example,
@@ -171,16 +203,15 @@ def custom_swagger_ui_html(
         footer {
             background-color: #FFFFFF;
             display: flex;
-            font-size: 1.2rem;
+            font-size: 1rem;
             flex_direction: row;
             justify-content: space-around;
             text-align: center;
             padding: 1rem;
             position: relative;
-            margin-top: 16px;
+            margin-top: 48px;
             bottom: 0;
             width: 100%;
-            margin-top: 16px;
         }
 
         .footer-nav {
@@ -201,7 +232,19 @@ def custom_swagger_ui_html(
             scale: 0.9;
             text-decoration: underline;
         }
+
+        main {
+            padding: 0 0 !important;
+            width: screen;
+        }
     </style>
+    """
+
+    # Custom Font
+    font_html = """
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Readex+Pro:wght@160..700&display=swap" rel="stylesheet">
     """
 
     # Custom Navbar HTML
@@ -211,10 +254,12 @@ def custom_swagger_ui_html(
             <img src="/logo.png" alt="OriginalFlix Logo" style="height: 40px;">
         </a>
     </nav>
+    <main>
     """
 
     # Custom Footer HTML
     footer_html = """
+    </main>
     <footer>
         <div class="footer-nav">
             <a href="https://originalflix.dev"  target="_blank">Home</a>
@@ -232,7 +277,7 @@ def custom_swagger_ui_html(
         f'{navbar_html}<div id="swagger-ui">'
     )
     modified_html = modified_html.replace('</body>', f'{footer_html}</body>')
-    modified_html = modified_html.replace('</head>', f'{custom_css}</head>')
+    modified_html = modified_html.replace('</head>', f'{custom_css}{font_html}</head>')
 
     return HTMLResponse(content=modified_html, media_type="text/html")
 
@@ -258,23 +303,8 @@ def docs():
 async def favicon():
     return FileResponse("/favicon.ico")
 
-# get available services
-@app.get("/get-available-services", response_model=List[str], summary="Get Available Services", tags=["API Version 1.0"])
-def get_services(db: Session = Depends(get_db)):
-    """
-    Retrieve all unique streaming services available in the database. Use this generated list to get the valid services you can filter with in other endpoints.
-
-    ### Response:
-    - A list of streaming services (e.g., Netflix, Hulu, Amazon Prime).
-
-    ### Example Request:
-    `GET https://api.originalflix.dev/get-available-services`
-    """
-    services = db.query(OriginalContent.service).distinct().all()
-    return [service for service, in services]
-
 # get OriginalContent items filtered by service
-@app.get("/get-originals", response_model=List[OriginalContentModel], summary="Get Originals by Service", tags=["API Version 1.0"])
+@app.get("/get-originals", response_model=List[OriginalContentModel], summary="Get Originals by Service", tags=["Endpoints"])
 def get_originals(
     service: str = Query(..., description="Filter by the name of the streaming service (case-insensitive)"),
     skip: int = Query(0, ge=0, description="Number of records to skip for pagination"),
@@ -333,7 +363,7 @@ def get_originals(
     return originals
 
 # check if a given title is an original for a given service
-@app.get("/is-original", summary="Check if Title is an Original", tags=["API Version 1.0"])
+@app.get("/is-original", summary="Check if Title is an Original", tags=["Endpoints"])
 def is_original(
     title: str = Query(..., description="Title of the movie/show to check"),
     service: str = Query(..., description="Streaming service directory to check in"),
@@ -362,7 +392,7 @@ def is_original(
     return {"title": title, "service": service, "exists": exists}
 
 # get the service of an given title
-@app.get("/get-title-service", summary="Get Service of a Title", tags=["API Version 1.0"])
+@app.get("/get-title-service", summary="Get Service of a Title", tags=["Endpoints"])
 def get_service(
     title: str = Query(..., description = "Title of the movie/show to find the service for"),
     db: Session = Depends(get_db)
@@ -400,7 +430,7 @@ def get_service(
 
 
 # search for OriginalContent items
-@app.get("/search-originals", response_model=List[OriginalContentModel], summary="Search Originals Database", tags=["API Version 1.0"])
+@app.get("/search-originals", response_model=List[OriginalContentModel], summary="Search Originals Database", tags=["Endpoints"])
 def search_originals(
     title: Optional[str]= Query(None, description = "Search by title (partial match)"),
     service: Optional[str] = Query(None, description = "Filter by streaming service"),
@@ -468,3 +498,18 @@ def search_originals(
 
     results = query.offset(skip).limit(limit).all()
     return results
+
+# get available services
+@app.get("/get-available-services", response_model=List[str], summary="Get Available Services", tags=["Endpoints"])
+def get_services(db: Session = Depends(get_db)):
+    """
+    Retrieve all unique streaming services available in the database. Use this generated list to get the valid services you can filter with in other endpoints.
+
+    ### Response:
+    - A list of streaming services (e.g., Netflix, Hulu, Amazon Prime).
+
+    ### Example Request:
+    `GET https://api.originalflix.dev/get-available-services`
+    """
+    services = db.query(OriginalContent.service).distinct().all()
+    return [service for service, in services]
