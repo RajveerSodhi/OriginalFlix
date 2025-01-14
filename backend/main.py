@@ -3,7 +3,8 @@ from typing import List, Optional
 from sqlalchemy.orm import Session
 from fastapi import FastAPI, Query, HTTPException, status, Depends
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import FileResponse, JSONResponse, RedirectResponse
+from fastapi.responses import FileResponse, RedirectResponse, HTMLResponse
+from fastapi.staticfiles import StaticFiles
 from fastapi.openapi.docs import get_swagger_ui_html
 from pydantic import BaseModel
 from database import SessionLocal, engine
@@ -14,26 +15,26 @@ app = FastAPI(
     title="OriginalFlix API",
     version="1.0",
     root_path="/v1",
-    docs_url="/docs",
-    swagger_ui_parameters={
-        "defaultModelsExpandDepth": 0,
-        "docExpansion": "list",
-    },
+    docs_url=None,
     description=""",
 
     Welcome to the OriginalFlix API!
 
     This API allows users to:
-    - Retrieve a catalog of original movies and shows available across multiple streaming platforms.
-    - Filter, search, and verify whether a specific title is an original on a particular service.
-    - Get the service a title belongs to.
+    → Retrieve a catalog of original movies and shows available across multiple streaming platforms.
+    → Filter, search, and verify whether a specific title is an original on a particular service.
+    → Get the service a title belongs to.
 
     No authentication required!
     Deployed using Azure Flexible Postgres, Heroku, and Vercel.
 
-    The base URL for all endpoints is www.api.originalflix.dev or api.originalflix.dev
+    The base URL for all endpoints is www.api.originalflix.dev or api.originalflix.dev.
+
+    Get more information from originalflix.dev.
     """
 )
+
+app.mount("/static", StaticFiles(directory="static"), name="static")
 
 origins = ["*"]
 
@@ -79,23 +80,194 @@ def get_db():
 
 Base.metadata.create_all(bind=engine)
 
-# Root Endpoint
-@app.get("/", include_in_schema=False)
-async def custom_swagger_ui_html():
-    return get_swagger_ui_html(
-        openapi_url=app.openapi_url,
-        title=app.title
+favicon_url = "./static/favicon.ico"
+logo_url = "./static/logo.png"
+
+def custom_swagger_ui_html(
+    *,
+    openapi_url: str,
+    title: str,
+    swagger_js_url: str,
+    swagger_css_url: str,
+):
+    # Original Swagger UI HTML
+    swagger_ui_html = get_swagger_ui_html(
+        openapi_url=openapi_url,
+        title=title,
+        swagger_js_url=swagger_js_url,
+        swagger_css_url=swagger_css_url,
     )
 
-# @app.get("/docs", include_in_schema=False)
-# def docs():
-#     response = RedirectResponse(url='/')
-#     return response
+    # Extract original HTML content
+    html_content = swagger_ui_html.body.decode("utf-8")
+
+    # Custom CSS for Swagger UI
+    custom_css = """
+    <style>
+        body, html {
+            background-color: rgb(245 245 244);
+            margin: 0;
+            overflow-x: hidden;
+            padding: 0;
+            color: #292524;
+            font-family: Arial, sans-serif;
+        }
+        .swagger-ui .info {
+            background-color: #f86363 !important;
+            color: white !important;
+            padding: 20px !important;
+            border-radius: 16px !important;
+        }
+
+        .swagger-ui .info code {
+            padding: 16px !important;
+            margin: -12px 0 !important;
+            border-radius: 12px !important;
+            color: white !important;
+            font-weight: 400 !important;
+            font-family: Arial, sans-serif !important;
+            font-size: 1.15rem !important;
+        }
+
+        .swagger-ui .info a {
+            display: none !important;
+        }
+
+        .scheme-container {
+            display: none !important;
+        }
+
+        .swagger-ui .opblock {
+            border-radius: 16px !important;
+            background-color: white !important;
+            padding: 4px 16px !important;
+            border: 1px solid #ddd !important;
+        }
+
+        .opblock-summary-method {
+            padding: 12px 4px !important;
+            border-radius: 8px !important;
+            background-color: #da9030 !important;
+        }
+
+        .opblock-description-wrapper {
+            font-size: 1.1rem !important;
+        }
+
+        .opblock-description-wrapper p {
+            font-size: 1.1rem !important;
+        }
+
+        .models,
+        .models-is-open {
+            display: none !important;
+        }
+
+        button {
+            border-radius: 25px !important;
+            padding-top: 10px !important;
+            padding-bottom: 10px !important;
+        }
+
+        .example,
+        .microlight {
+            border-radius: 12px !important;
+        }
+
+        footer {
+            background-color: #FFFFFF;
+            display: flex;
+            font-size: 1.2rem;
+            flex_direction: row;
+            justify-content: space-around;
+            text-align: center;
+            padding: 1rem;
+            position: relative;
+            margin-top: 16px;
+            bottom: 0;
+            width: 100%;
+            margin-top: 16px;
+        }
+
+        .footer-nav {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+            width: fit;
+        }
+
+        .footer-nav a {
+            text-decoration: none;
+            color: #292524;
+            transition: scale 200ms ease-in-out;
+        }
+
+        .footer-nav a:hover {
+            scale: 0.9;
+            text-decoration: underline;
+        }
+    </style>
+    """
+
+    # Custom Navbar HTML
+    navbar_html = """
+    <nav style="background-color: #FFFFFF; color: #292524; padding: 16px; display: flex; justify-content: space-between; align-items: center; width: 100%;">
+        <a href="/">
+            <img src="/static/logo.png" alt="OriginalFlix Logo" style="height: 40px;">
+        </a>
+    </nav>
+    """
+
+    # Custom Footer HTML
+    footer_html = """
+    <footer>
+        <div class="footer-nav">
+            <a href="https://originalflix.dev"  target="_blank">Home</a>
+            <a href="https://api.originalflix.dev" style="margin: 0 20px;">Documentation</a>
+            <a href="https://api.originalflix.dev/redoc" style="margin-right: 20px;">Redoc</a>
+            <a href="https://buymeacoffee.com/rajveersodhi" target="_blank">Buy me a Coffee</a>
+        </div>
+        <p>Maintained by <a href="https://rajveersodhi.com" style="text-decoration: none; font-weight: 600; color: #292524;"  target="_blank">Rajveer Sodhi</a></p>
+    </footer>
+    """
+
+    # Inject navbar and footer into Swagger UI HTML
+    modified_html = html_content.replace(
+        '<div id="swagger-ui">',
+        f'{navbar_html}<div id="swagger-ui">'
+    )
+    modified_html = modified_html.replace('</body>', f'{footer_html}</body>')
+    modified_html = modified_html.replace('</head>', f'{custom_css}</head>')
+
+    return HTMLResponse(content=modified_html, media_type="text/html")
+
+
+
+# Root Endpoint
+@app.get("/", include_in_schema=False)
+async def overridden_docs():
+    return custom_swagger_ui_html(
+        openapi_url=app.openapi_url,
+        title=app.title,
+        swagger_js_url="https://cdn.jsdelivr.net/npm/swagger-ui-dist@5/swagger-ui-bundle.js",
+        swagger_css_url="https://cdn.jsdelivr.net/npm/swagger-ui-dist@5/swagger-ui.css",
+    )
+
+@app.get("/docs", include_in_schema=False)
+def docs():
+    response = RedirectResponse(url='/')
+    return response
 
 # Favicon
 @app.get("/favicon.ico", include_in_schema=False)
 async def favicon():
-    return FileResponse("favicon.ico")
+    return FileResponse(favicon_url)
+
+#Logo
+@app.get("/logo.png", include_in_schema=False)
+async def favicon():
+    return FileResponse(logo_url)
 
 # get available services
 @app.get("/get-available-services", response_model=List[str], summary="Get Available Services", tags=["API Version 1.0"])
