@@ -207,7 +207,7 @@ def custom_swagger_ui_html(
     # Custom Navbar HTML
     navbar_html = """
     <nav style="background-color: #FFFFFF; color: #292524; padding: 16px; display: flex; justify-content: space-between; align-items: center; width: 100%;">
-        <a href="/">
+        <a href="https://originalflix.dev">
             <img src="/logo.png" alt="OriginalFlix Logo" style="height: 40px;">
         </a>
     </nav>
