@@ -13,6 +13,7 @@ app = FastAPI(
     title="OriginalFlix API",
     version="1.0",
     root_path="/v1",
+    swagger_ui_parameters={},
     description=""",
 
     Welcome to the OriginalFlix API!
@@ -85,7 +86,7 @@ def root():
     return response
 
 # get available services
-@app.get("/get-available-services", response_model=List[str], summary="Get Available Services")
+@app.get("/get-available-services", response_model=List[str], summary="Get Available Services", tags=["API Version 1.0"])
 def get_services(db: Session = Depends(get_db)):
     """
     Retrieve all unique streaming services available in the database. Use this generated list to get the valid services you can filter with in other endpoints.
@@ -100,7 +101,7 @@ def get_services(db: Session = Depends(get_db)):
     return [service for service, in services]
 
 # get OriginalContent items filtered by service
-@app.get("/get-originals", response_model=List[OriginalContentModel], summary="Get Originals by Service")
+@app.get("/get-originals", response_model=List[OriginalContentModel], summary="Get Originals by Service", tags=["API Version 1.0"])
 def get_originals(
     service: str = Query(..., description="Filter by the name of the streaming service (case-insensitive)"),
     skip: int = Query(0, ge=0, description="Number of records to skip for pagination"),
@@ -159,7 +160,7 @@ def get_originals(
     return originals
 
 # check if a given title is an original for a given service
-@app.get("/is-original", summary="Check if Title is an Original")
+@app.get("/is-original", summary="Check if Title is an Original", tags=["API Version 1.0"])
 def is_original(
     title: str = Query(..., description="Title of the movie/show to check"),
     service: str = Query(..., description="Streaming service directory to check in"),
@@ -188,7 +189,7 @@ def is_original(
     return {"title": title, "service": service, "exists": exists}
 
 # get the service of an given title
-@app.get("/get-title-service", summary="Get Service of a Title")
+@app.get("/get-title-service", summary="Get Service of a Title", tags=["API Version 1.0"])
 def get_service(
     title: str = Query(..., description = "Title of the movie/show to find the service for"),
     db: Session = Depends(get_db)
@@ -226,7 +227,7 @@ def get_service(
 
 
 # search for OriginalContent items
-@app.get("/search-originals", response_model=List[OriginalContentModel], summary="Search Originals Database")
+@app.get("/search-originals", response_model=List[OriginalContentModel], summary="Search Originals Database", tags=["API Version 1.0"])
 def search_originals(
     title: Optional[str]= Query(None, description = "Search by title (partial match)"),
     service: Optional[str] = Query(None, description = "Filter by streaming service"),
