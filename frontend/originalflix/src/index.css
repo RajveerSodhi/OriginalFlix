@@ -4,7 +4,7 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Readex+Pro:wght@160..700&display=swap');
 
-body,html {
+body, html {
     font-family: "Readex Pro", sans-serif;
 }
 
@@ -14,4 +14,57 @@ body {
 
 * {
     box-sizing: border-box;
+}
+
+.ticker-container {
+    overflow: hidden;
+    position: relative;
+    background-color: rgba(128, 128, 128, 0.25);
+    padding: 35px 0;
+    width: 100%;
+}
+
+.ticker-slide {
+    display: flex;
+    animation: scroll 30s linear infinite;
+}
+
+.ticker-slide img {
+    height: 52px;
+    margin: 0 65px;
+    flex-shrink: 0;
+}
+
+.ticker-container:hover .ticker-slide {
+    animation-play-state: paused;
+}
+
+.ticker-container:before,
+.ticker-container:after {
+    position: absolute;
+    top: 0;
+    width: 200px;
+    height: 100%;
+    content: "";
+    z-index: 2;
+}
+
+.ticker-container:before {
+    left: 0;
+    background: linear-gradient(to left, rgba(255, 255, 255, 0), #dddcda);
+}
+
+.ticker-container:after {
+    right: 0;
+    background: linear-gradient(to right, rgba(255, 255, 255, 0), #dddcda);
+}
+
+
+@keyframes scroll {
+    from {
+        transform: translateX(0);
+    }
+    to {
+        transform: translateX(-100%);
+    }
 }
