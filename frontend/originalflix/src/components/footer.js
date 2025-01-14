@@ -2,7 +2,7 @@ import { FaArrowRight } from "react-icons/fa";
 
 function Footer() {
     return (
-        <footer className="text-center p-4 flex flex-row justify-start items-center mt-8">
+        <footer className="text-center p-4 flex flex-row justify-center items-center mt-8">
             <a href="mailto:rajveersodhi03@gmail.com" target="_blank" className="flex flex-col p-4 justify-center items-center aspect-square h-36 bg-pink rounded-3xl shadow-md hover:shadow-lg hover:scale-105 transition-all duration-300 ease-in-out">
                 <span className="text-[3rem]">
                     👋
@@ -11,13 +11,13 @@ function Footer() {
                     Say Hello
                 </span>
             </a>
-            <a href="https://www.rajveersodhi.com" target="_blank" className="flex flex-col p-4 mx-6 justify-center items-center aspect-square h-36 bg-portfolio-bg rounded-3xl shadow-md hover:shadow-lg hover:scale-105 transition-all duration-300 ease-in-out">
+            <a href="https://www.rajveersodhi.com" target="_blank" className="flex flex-col p-4 mx-8 justify-center items-center aspect-square h-36 bg-portfolio-bg rounded-3xl shadow-md hover:shadow-lg hover:scale-105 transition-all duration-300 ease-in-out">
                 <img className="h-[3rem] my-3" src="/portfolio.svg" />
                 <span className="text-[#ffffff] text-center">
                     See More
                 </span>
             </a>
-            <a href="https://buymeacoffee.com/rajveersodhi" target="_blank" className="flex flex-col p-4 mr-6 justify-center items-center aspect-square h-36 bg-coffee-bg rounded-3xl shadow-md hover:shadow-lg hover:scale-105 transition-all duration-300 ease-in-out">
+            <a href="https://buymeacoffee.com/rajveersodhi" target="_blank" className="flex flex-col p-4 mr-8 justify-center items-center aspect-square h-36 bg-coffee-bg rounded-3xl shadow-md hover:shadow-lg hover:scale-105 transition-all duration-300 ease-in-out">
             <img className="h-[4rem] my-1" src="/bmac.png" />
             <img className="h-[2rem]" src="/bmac_text.png" />
             </a>
