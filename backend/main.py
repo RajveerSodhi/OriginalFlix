@@ -4,7 +4,6 @@ from sqlalchemy.orm import Session
 from fastapi import FastAPI, Query, HTTPException, status, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, RedirectResponse, HTMLResponse
-from fastapi.staticfiles import StaticFiles
 from fastapi.openapi.docs import get_swagger_ui_html
 from pydantic import BaseModel
 from database import SessionLocal, engine
@@ -33,8 +32,6 @@ app = FastAPI(
     Get more information from originalflix.dev.
     """
 )
-
-app.mount("/static", StaticFiles(directory="static"), name="static")
 
 origins = ["*"]
 
@@ -79,9 +76,6 @@ def get_db():
         db.close()
 
 Base.metadata.create_all(bind=engine)
-
-favicon_url = "./static/favicon.ico"
-logo_url = "./static/logo.png"
 
 def custom_swagger_ui_html(
     *,
@@ -214,7 +208,7 @@ def custom_swagger_ui_html(
     navbar_html = """
     <nav style="background-color: #FFFFFF; color: #292524; padding: 16px; display: flex; justify-content: space-between; align-items: center; width: 100%;">
         <a href="/">
-            <img src="/static/logo.png" alt="OriginalFlix Logo" style="height: 40px;">
+            <img src="/logo.png" alt="OriginalFlix Logo" style="height: 40px;">
         </a>
     </nav>
     """
@@ -262,12 +256,7 @@ def docs():
 # Favicon
 @app.get("/favicon.ico", include_in_schema=False)
 async def favicon():
-    return FileResponse(favicon_url)
-
-#Logo
-@app.get("/logo.png", include_in_schema=False)
-async def favicon():
-    return FileResponse(logo_url)
+    return FileResponse("/favicon.ico")
 
 # get available services
 @app.get("/get-available-services", response_model=List[str], summary="Get Available Services", tags=["API Version 1.0"])
