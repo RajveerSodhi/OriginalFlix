@@ -4,6 +4,7 @@ from sqlalchemy.orm import Session
 from fastapi import FastAPI, Query, HTTPException, status, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, JSONResponse, RedirectResponse
+from fastapi.openapi.docs import get_swagger_ui_html
 from pydantic import BaseModel
 from database import SessionLocal, engine
 from model import OriginalContent, Base
@@ -13,7 +14,11 @@ app = FastAPI(
     title="OriginalFlix API",
     version="1.0",
     root_path="/v1",
-    swagger_ui_parameters={},
+    docs_url="/docs",
+    swagger_ui_parameters={
+        "defaultModelsExpandDepth": 0,
+        "docExpansion": "list",
+    },
     description=""",
 
     Welcome to the OriginalFlix API!
@@ -74,16 +79,23 @@ def get_db():
 
 Base.metadata.create_all(bind=engine)
 
+# Root Endpoint
+@app.get("/", include_in_schema=False)
+async def custom_swagger_ui_html():
+    return get_swagger_ui_html(
+        openapi_url=app.openapi_url,
+        title=app.title
+    )
+
+# @app.get("/docs", include_in_schema=False)
+# def docs():
+#     response = RedirectResponse(url='/')
+#     return response
+
 # Favicon
 @app.get("/favicon.ico", include_in_schema=False)
 async def favicon():
     return FileResponse("favicon.ico")
-
-# Root endpoint
-@app.get("/", summary="Root Endpoint", include_in_schema=False)
-def root():
-    response = RedirectResponse(url='/docs')
-    return response
 
 # get available services
 @app.get("/get-available-services", response_model=List[str], summary="Get Available Services", tags=["API Version 1.0"])
@@ -295,10 +307,3 @@ def search_originals(
 
     results = query.offset(skip).limit(limit).all()
     return results
-
-@app.exception_handler(Exception)
-async def generic_exception_handler(request, exc):
-    return JSONResponse(
-        status_code=500,
-        content={"message": "An internal error occurred. Please try again later."},
-    )
