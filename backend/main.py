@@ -159,6 +159,7 @@ def custom_swagger_ui_html(
             margin-right: 80px !important;
             border-radius: 16px 16px 0 0 !important;
             margin-bottom: 14px !important;
+            outline: none !important;
         }
 
         .swagger-ui .opblock:hover {
@@ -169,7 +170,7 @@ def custom_swagger_ui_html(
         .opblock-summary-method {
             padding: 12px 4px !important;
             border-radius: 8px !important;
-            background-color: #da9030 !important;
+            background: linear-gradient(to right, #f86363, #da9030) !important;
             font-family: "Readex Pro", sans-serif !important;
         }
 
@@ -181,6 +182,11 @@ def custom_swagger_ui_html(
         .opblock-description-wrapper p {
             font-size: 1rem !important;
             font-family: "Readex Pro", sans-serif !important;
+        }
+
+        .opblock-description-wrapper code,
+        .opblock-description-wrapper p code {
+            color: #f86363 !important;
         }
 
         .models,
@@ -251,7 +257,7 @@ def custom_swagger_ui_html(
     navbar_html = """
     <nav style="background-color: #FFFFFF; color: #292524; padding: 16px; display: flex; justify-content: space-between; align-items: center; width: 100%;">
         <a href="https://originalflix.dev">
-            <img src="/logo.png" alt="OriginalFlix Logo" style="height: 40px;">
+            <img src="/logo.png" alt="OriginalFlix Logo" style="height: 3.5rem;">
         </a>
     </nav>
     <main>
@@ -293,6 +299,7 @@ async def overridden_docs():
         swagger_css_url="https://cdn.jsdelivr.net/npm/swagger-ui-dist@5/swagger-ui.css",
     )
 
+# Redirect to root
 @app.get("/docs", include_in_schema=False)
 def docs():
     response = RedirectResponse(url='/')
@@ -302,6 +309,11 @@ def docs():
 @app.get("/favicon.ico", include_in_schema=False)
 async def favicon():
     return FileResponse("/favicon.ico")
+
+# Logo
+@app.get("/logo.png", include_in_schema=False)
+async def logo():
+    return FileResponse("logo.png")
 
 # get OriginalContent items filtered by service
 @app.get("/get-originals", response_model=List[OriginalContentModel], summary="Get Originals by Service", tags=["Endpoints"])
