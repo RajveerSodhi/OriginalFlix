@@ -1,34 +1,37 @@
 function About() {
     return(
-        <section id="About">
-            <h3>What is it?</h3>
+        <section id="About" className="leading-7">
+            <h3 className="text-2xl font-bold my-4">What is it?</h3>
+            <p className="mb-4">
+                <em>Ever needed to determine whether a piece of content is a streaming platform original for your app? You've come to the right place.</em>
+            </p>
             <p>
-                The OriginalFlix API allows developers to quickly access a database of originally produced or exclusive content for streaming platforms like Netflix and Amazon Prime Video. Built for efficiency and simplicity, you can use this API to access and retrieve a robust catalog of original movies and shows categorized by streaming services, genres, and more. Ever needed to determine whether a piece of content is a streaming platform original for your program? You've come to the right place.
+                The OriginalFlix API allows developers to access a database of all originally produced or exclusive content for streaming platforms like Netflix, Hulu, and Amazon Prime Video. You can use this API to access and retrieve a robust catalog of original movies and shows categorized by streaming services, genres, and more.
             </p>
 
-            <h3>Features</h3>
+            <h3 className="text-2xl font-bold my-4">Features</h3>
             <ul>
-                <li>Advanced Filtering: With endpoints tailored for flexibility, the API supports easy filtering and searching capabilities across multiple columns of the database.</li>
-                <li>No Authentication Required: The API is free and accessible via GET requests for all users.</li>
-                <li>Unlimited Calls: There is no ceiling on the amount of calls that can be made to the API.</li>
+                <li><strong>→ Advanced Filtering:</strong> Easy filtering and searching capabilities across multiple columns of the database.</li>
+                <li><strong>→ No Authentication Required:</strong> Free and accessible via GET requests for all users</li>
+                <li><strong>→ Unlimited Calls:</strong> There is no ceiling on the amount of calls that can be made</li>
             </ul>
 
-            <h3>How does it work?</h3>
-            <p>
-                Backend: The database is compiled by scraping relevant Wikipedia (using BeautifulSoup4) articles for details on originally produced or exclusively distributed content by streaming services. FastAPI was used to create the endpoints to ensure deployment efficiency.
-                Database: SQLAlchemy was used with PostgreSQL for seamlesss data management.
-                Deployment: The data is cleaned and stored in an Azure flexible server. This React webpage is deployed using Vercel, and the API endpoints are deployed using Heroku to ensure scalability and reliability.
+            <h3 className="text-2xl font-bold my-4">How does it work?</h3>
+            <ul className="mb-4">
+                <li><strong>→ Backend:</strong> The database is compiled by scraping relevant Wikipedia articles using BeautifulSoup4 for details on originally produced or exclusively distributed content by streaming services. FastAPI is used to create the endpoints to ensure deployment efficiency.</li>
+                <li><strong>→ Database:</strong> SQLAlchemy is used with PostgreSQL for seamlesss data management.</li>
+                <li><strong>→ Deployment:</strong> The data is cleaned and stored in an Azure flexible PostgreSQL server. This React webpage is deployed using Vercel, and the API endpoints are deployed using Heroku to ensure scalability and reliability.</li>
+            </ul>
+            <p className="mb-4">
+                The database will be updated periodically, and code will be updated to include newly made Wikipedia pages, such as the yearly cataogs of Netflix original movies. All updates can be found in the <a href="#Changelog" className="font-bold hover:underline">Changelog</a>.
             </p>
             <p>
-                The database will be updated periodically, and code will be updated to include newly made Wikipedia pages, such as the yearly cataogs of Netflix original movies. All updates can be found in the Changelog.
+                A huge thanks to <a className="font-bold hover:underline" href="https://www.lineate.design/" target="_blank" rel="noreferrer">Lineate Designs</a> for helping bring this website to life.
             </p>
-            <h3>Check out this Implementation!</h3>
+            
+            <h3 className="text-2xl font-bold my-4">Built with OriginalFlix</h3>
             <p>
-                The project that led to the creation of this API, is the first live integration of the API in an application. The Custom Tudum Chrome extension uses the OriginalFlix API to allow users to replace the Tudum sound that plays at the beginning of all Netflix Originals. Check it out in the Chrome Webstore today!
-            </p>
-            <h3>Logo and UI Design</h3>
-            <p>
-                A huge thank you to Rudra Sharma from Lineate Designs for helping bring this website to life.
+                The <a className="font-bold hover:underline" href="https://chromewebstore.google.com/detail/custom-tudum/plkcjhmgcploglmdgbalngcnjholcamm">Custom Tudum Chrome extension</a> integrates the OriginalFlix API to allow users to replace the Tudum sound that plays at the beginning of all Netflix Originals.
             </p>
         </section>
     );

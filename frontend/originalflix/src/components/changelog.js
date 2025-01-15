@@ -1,8 +1,8 @@
 function Changelog() {
     return(
-        <div className="h-28 bg-gray">
+        <section id="Changelog" className="h-28 bg-gray">
             Changes!!
-        </div>
+        </section>
     );
 }
 

@@ -11,7 +11,7 @@ return (
             <h3 className="text-2xl mb-6">Supported Streaming Services</h3>
             <Ticker />
         </section>
-        <section className="flex flex-row items-center justify-around mt-10">
+        <section className="flex flex-col lg:flex-row items-center justify-around mt-10 px-6">
             <About />
             <Changelog />
         </section>
