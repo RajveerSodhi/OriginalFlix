@@ -2,7 +2,7 @@ import { FaArrowRight } from "react-icons/fa";
 
 function Footer() {
     return (
-        <footer className="text-center p-4 flex flex-row justify-center items-center mt-8">
+        <footer className="text-center p-4 flex flex-col sm:flex-row justify-center items-center mt-24">
             <a
                 href="mailto:rajveersodhi03@gmail.com"
                 target="_blank"
@@ -16,7 +16,7 @@ function Footer() {
                 href="https://www.rajveersodhi.com"
                 target="_blank"
                 rel="noreferrer"
-                className="flex flex-col p-4 mx-8 justify-center items-center aspect-square h-36 bg-portfolio-bg rounded-3xl shadow-md hover:shadow-lg hover:scale-105 transition-all duration-300 ease-in-out"
+                className="flex flex-col p-4 mx-8 my-8 sm:my-0 justify-center items-center aspect-square h-36 bg-portfolio-bg rounded-3xl shadow-md hover:shadow-lg hover:scale-105 transition-all duration-300 ease-in-out"
             >
                 <img className="h-[3rem] my-3" src="/portfolio.svg" />
                 <span className="text-[#ffffff] text-center">See More</span>
@@ -25,12 +25,12 @@ function Footer() {
                 href="https://buymeacoffee.com/rajveersodhi"
                 target="_blank"
                 rel="noreferrer"
-                className="flex flex-col p-4 mr-8 justify-center items-center aspect-square h-36 bg-coffee-bg rounded-3xl shadow-md hover:shadow-lg hover:scale-105 transition-all duration-300 ease-in-out"
+                className="flex flex-col p-4 justify-center items-center aspect-square h-36 bg-coffee-bg rounded-3xl shadow-md hover:shadow-lg hover:scale-105 transition-all duration-300 ease-in-out"
             >
                 <img className="h-[4rem] my-1" src="/bmac.png" />
                 <img className="h-[2rem]" src="/bmac_text.png" />
             </a>
-            <div className="flex flex-col justify-start items-start h-full w-full">
+            <div className="flex flex-col justify-start items-center sm:items-start h-full mt-8 sm:mt-0 sm:ml-8">
                 <a
                     className="flex items-center hover:scale-90 transition-all duration-300 ease-in-out cursor-pointer"
                     href="/"
@@ -52,7 +52,7 @@ function Footer() {
                     <FaArrowRight className="scale-90 mr-1" />
                     Redoc
                 </a>
-                <div className="flex flex-col justify-start items-start h-full mt-2 text-sm text-dark">
+                <div className="flex flex-col justify-start items-center sm:items-start h-full mt-2 text-sm text-dark">
                     <p>
                         Maintained by{" "}
                         <a

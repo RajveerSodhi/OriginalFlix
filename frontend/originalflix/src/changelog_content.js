@@ -1,4 +1,4 @@
-export const changelog = [
+const changelogContent = [
     {
         date: "Jan 13, 2025",
         content: [
@@ -15,3 +15,5 @@ export const changelog = [
         ]
     },
 ]
+
+export default changelogContent
