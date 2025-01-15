@@ -25,7 +25,6 @@ app = FastAPI(
     → Get the service a title belongs to.
 
     No authentication required!
-    Deployed using Azure Flexible Postgres, Heroku, and Vercel.
 
     The base URL for all endpoints is www.api.originalflix.dev or api.originalflix.dev.
 
@@ -268,12 +267,12 @@ def custom_swagger_ui_html(
     </main>
     <footer>
         <div class="footer-nav">
-            <a href="https://originalflix.dev"  target="_blank">Home</a>
+            <a href="https://originalflix.dev"  target="_blank" rel="noreferrer">Home</a>
             <a href="https://api.originalflix.dev" style="margin: 0 20px;">Documentation</a>
             <a href="https://api.originalflix.dev/redoc" style="margin-right: 20px;">Redoc</a>
-            <a href="https://buymeacoffee.com/rajveersodhi" target="_blank">Buy me a Coffee</a>
+            <a href="https://buymeacoffee.com/rajveersodhi" target="_blank" rel="noreferrer">Buy me a Coffee</a>
         </div>
-        <p>Maintained by <a href="https://rajveersodhi.com" style="text-decoration: none; font-weight: 600; color: #292524;"  target="_blank">Rajveer Sodhi</a></p>
+        <p>Maintained by <a href="https://rajveersodhi.com" style="text-decoration: none; font-weight: 600; color: #292524;"  target="_blank" rel="noreferrer">Rajveer Sodhi</a></p>
     </footer>
     """
 
@@ -330,7 +329,7 @@ def get_originals(
     Dates are formatted as YYYY-MM-DD. For movies and TV shows whose release dates are unavailable, the default date is `2035-01-01`. For TV shows, the release date is set to the date of the premiere of S01E01.
     
     ### Category Column
-    OriginalFlix works by scraping several Wikipedia pages regularly to stay up to date about the original content offered by streaming services. You can find more information about this via the About page. The `Category` column of the OriginalFlix database consists of titles given to the various tables present in the Wikipedia page.
+    OriginalFlix works by scraping several Wikipedia pages regularly to stay up to date about the original content offered by streaming services. You can find more information about this via the [About](https://originalflix.dev#About) section. The `Category` column of the OriginalFlix database consists of titles given to the various tables present in the Wikipedia page.
     
     Sometimes, the title consists of a broader genre that a piece of content falls under. In that case, it is retained in the category column. For example, for a movie with genre "Investigative Thriller," the category may be "Thriller." In other cases, the category consists of the language of the pieces of content listed in the corresponding table. In this case, OriginalFlix recognizes the language categorization and updates the language column of the database instead, leaving the category entry be "Uncategorized." Rarely, this column might include metadata about the content.
 
