@@ -315,7 +315,7 @@ async def logo():
     return FileResponse("logo.png")
 
 # get OriginalContent items filtered by service
-@app.get("/get-originals", response_model=List[OriginalContentModel], summary="Get Originals by Service", tags=["Endpoints"])
+@app.get("/originals", response_model=List[OriginalContentModel], summary="Get Originals by Service", tags=["Endpoints"])
 def get_originals(
     service: str = Query(..., description="Filter by the name of the streaming service (case-insensitive)"),
     skip: int = Query(0, ge=0, description="Number of records to skip for pagination"),
@@ -352,7 +352,7 @@ def get_originals(
     A list of original content items (movies/shows) belonging to the specified service.
 
     ### Example Request:
-    `GET https://api.originalflix.rajveersodhi.com/get-originals?service=Netflix&skip=0&limit=5`
+    `GET https://api.originalflix.rajveersodhi.com/originals?service=Netflix&skip=0&limit=5`
     """
 
     if skip < 0:
@@ -403,7 +403,7 @@ def is_original(
     return {"title": title, "service": service, "exists": exists}
 
 # get the service of an given title
-@app.get("/get-title-service", summary="Get Service of a Title", tags=["Endpoints"])
+@app.get("/title-service", summary="Get Service of a Title", tags=["Endpoints"])
 def get_service(
     title: str = Query(..., description = "Title of the movie/show to find the service for"),
     db: Session = Depends(get_db)
@@ -416,7 +416,7 @@ def get_service(
     - `service`: Name of the streaming service where the title is available.
 
     ### Example Request:
-    `GET https://api.originalflix.rajveersodhi.com/get-title-service?title=The%20Crown`
+    `GET https://api.originalflix.rajveersodhi.com/title-service?title=The%20Crown`
     """
     if not title.strip():
         raise HTTPException(
@@ -511,7 +511,7 @@ def search_originals(
     return results
 
 # get available services
-@app.get("/get-available-services", response_model=List[str], summary="Get Available Services", tags=["Endpoints"])
+@app.get("/services", response_model=List[str], summary="Get Available Services", tags=["Endpoints"])
 def get_services(db: Session = Depends(get_db)):
     """
     Retrieve all unique streaming services available in the database. Use this generated list to get the valid services you can filter with in other endpoints.
@@ -520,7 +520,7 @@ def get_services(db: Session = Depends(get_db)):
     - A list of streaming services (e.g., Netflix, Hulu, Amazon Prime).
 
     ### Example Request:
-    `GET https://api.originalflix.rajveersodhi.com/get-available-services`
+    `GET https://api.originalflix.rajveersodhi.com/services`
     """
     services = db.query(OriginalContent.service).distinct().all()
     return [service for service, in services]
