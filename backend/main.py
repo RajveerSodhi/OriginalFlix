@@ -26,9 +26,9 @@ app = FastAPI(
 
     No authentication required!
 
-    The base URL for all endpoints is www.api.originalflix.dev or api.originalflix.dev.
+    The base URL for all endpoints is api.originalflix.rajveersodhi.com.
 
-    Get more information from originalflix.dev.
+    Get more information from originalflix.rajveersodhi.com.
     """
 )
 
@@ -255,7 +255,7 @@ def custom_swagger_ui_html(
     # Custom Navbar HTML
     navbar_html = """
     <nav style="background-color: #FFFFFF; color: #292524; padding: 16px; display: flex; justify-content: space-between; align-items: center; width: 100%;">
-        <a href="https://originalflix.dev">
+        <a href="https://originalflix.rajveersodhi.com">
             <img src="/logo.png" alt="OriginalFlix Logo" style="height: 3.5rem;">
         </a>
     </nav>
@@ -267,9 +267,9 @@ def custom_swagger_ui_html(
     </main>
     <footer>
         <div class="footer-nav">
-            <a href="https://originalflix.dev"  target="_blank" rel="noreferrer">Home</a>
-            <a href="https://api.originalflix.dev" style="margin: 0 20px;">Documentation</a>
-            <a href="https://api.originalflix.dev/redoc" style="margin-right: 20px;">Redoc</a>
+            <a href="https://originalflix.rajveersodhi.com"  target="_blank" rel="noreferrer">Home</a>
+            <a href="https://api.originalflix.rajveersodhi.com" style="margin: 0 20px;">Documentation</a>
+            <a href="https://api.originalflix.rajveersodhi.com/redoc" style="margin-right: 20px;">Redoc</a>
             <a href="https://buymeacoffee.com/rajveersodhi" target="_blank" rel="noreferrer">Buy me a Coffee</a>
         </div>
         <p>Maintained by <a href="https://rajveersodhi.com" style="text-decoration: none; font-weight: 600; color: #292524;"  target="_blank" rel="noreferrer">Rajveer Sodhi</a></p>
@@ -329,7 +329,7 @@ def get_originals(
     Dates are formatted as YYYY-MM-DD. For movies and TV shows whose release dates are unavailable, the default date is `2035-01-01`. For TV shows, the release date is set to the date of the premiere of S01E01.
     
     ### Category Column
-    OriginalFlix works by scraping several Wikipedia pages regularly to stay up to date about the original content offered by streaming services. You can find more information about this via the [About](https://originalflix.dev#About) section. The `Category` column of the OriginalFlix database consists of titles given to the various tables present in the Wikipedia page.
+    OriginalFlix works by scraping several Wikipedia pages regularly to stay up to date about the original content offered by streaming services. You can find more information about this via the [About](https://originalflix.rajveersodhi.com#About) section. The `Category` column of the OriginalFlix database consists of titles given to the various tables present in the Wikipedia page.
     
     Sometimes, the title consists of a broader genre that a piece of content falls under. In that case, it is retained in the category column. For example, for a movie with genre "Investigative Thriller," the category may be "Thriller." In other cases, the category consists of the language of the pieces of content listed in the corresponding table. In this case, OriginalFlix recognizes the language categorization and updates the language column of the database instead, leaving the category entry be "Uncategorized." Rarely, this column might include metadata about the content.
 
@@ -352,7 +352,7 @@ def get_originals(
     A list of original content items (movies/shows) belonging to the specified service.
 
     ### Example Request:
-    `GET https://api.originalflix.dev/get-originals?service=Netflix&skip=0&limit=5`
+    `GET https://api.originalflix.rajveersodhi.com/get-originals?service=Netflix&skip=0&limit=5`
     """
 
     if skip < 0:
@@ -390,7 +390,7 @@ def is_original(
     - `exists`: Boolean indicating whether the title exists as an original.
 
     ### Example Request:
-    `GET https://api.originalflix.dev/is-original?title=Stranger%20Things&service=Netflix`
+    `GET https://api.originalflix.rajveersodhi.com/is-original?title=Stranger%20Things&service=Netflix`
     """
     query = db.query(OriginalContent)
 
@@ -416,7 +416,7 @@ def get_service(
     - `service`: Name of the streaming service where the title is available.
 
     ### Example Request:
-    `GET https://api.originalflix.dev/get-title-service?title=The%20Crown`
+    `GET https://api.originalflix.rajveersodhi.com/get-title-service?title=The%20Crown`
     """
     if not title.strip():
         raise HTTPException(
@@ -464,7 +464,7 @@ def search_originals(
     A list of original content items matching the search criteria.
 
     ### Example Request:
-    `GET https://api.originalflix.dev/search-originals?title=the&service=Netflix&genre=Drama&min_release_date=2015-01-01&max_release_date=2020-12-31&limit=10`
+    `GET https://api.originalflix.rajveersodhi.com/search-originals?title=the&service=Netflix&genre=Drama&min_release_date=2015-01-01&max_release_date=2020-12-31&limit=10`
     """
 
     if skip < 0:
@@ -520,7 +520,7 @@ def get_services(db: Session = Depends(get_db)):
     - A list of streaming services (e.g., Netflix, Hulu, Amazon Prime).
 
     ### Example Request:
-    `GET https://api.originalflix.dev/get-available-services`
+    `GET https://api.originalflix.rajveersodhi.com/get-available-services`
     """
     services = db.query(OriginalContent.service).distinct().all()
     return [service for service, in services]

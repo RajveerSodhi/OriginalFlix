@@ -1,5 +1,17 @@
 const changelogContent = [
     {
+        date: "Dec 30, 2025",
+        content: [
+            "URL has been updated to 'originalflix.rajveersodhi.com'.",
+        ]
+    },
+    {
+        date: "Jul 3, 2025",
+        content: [
+            "The datebase has been updated.",
+        ]
+    },
+    {
         date: "Mar 4, 2025",
         content: [
             "The datebase has been updated; Netflix Original movies from 2020 - 2022 have been added. 2023 data and Zee5's original movie library still missing.",
@@ -14,7 +26,6 @@ const changelogContent = [
     {
         date: "Jan 13, 2025",
         content: [
-            "Future updates will try to patch the columns of the database without valid values by implementing scraping code specific to each Wikipedia page format.",
             "The datebase has been refreshed with an added source_id column fo tracking information validity from the source.",
             "Improved the API endpoint responses to include more information."
         ]

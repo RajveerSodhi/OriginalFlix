@@ -40,14 +40,14 @@ function Footer() {
                 </a>
                 <a
                     className="flex items-center hover:scale-90 transition-all duration-300 ease-in-out cursor-pointer"
-                    href="https://api.originalflix.dev"
+                    href="https://api.originalflix.rajveersodhi.com"
                 >
                     <FaArrowRight className="scale-90 mr-1" />
                     Documentation
                 </a>
                 <a
                     className="flex items-center hover:scale-90 transition-all duration-300 ease-in-out cursor-pointer"
-                    href="https://api.originalflix.dev/redoc"
+                    href="https://api.originalflix.rajveersodhi.com/redoc"
                 >
                     <FaArrowRight className="scale-90 mr-1" />
                     Redoc

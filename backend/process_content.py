@@ -176,12 +176,11 @@ def format_date(rawDate):
             parsed_year = token
             continue
         
-        # Otherwise, try to interpret it as a day (1-31)
+        # Otherwise, try to interpret it as a day
         if token.isdigit() and parsed_day is None:
             parsed_day = token
             continue
         
-        # If we haven't assigned it to month/day/year, we can't parse
         return None
     
     # We must have all three components

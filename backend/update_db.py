@@ -235,11 +235,7 @@ def update_database():
                     if not cleaned_table:
                         continue
                     
-                    # Each cleaned_table has `headers` and `rows`
-                    # Example of final_headers: ["Title", "Release Date", "Genre", "Language", "Status", "Category"]
-                    # cleaned_table["rows"] might look like [[title, "2025-01-01", "Action", "English", "Active", "Uncategorized"], ...]
-                    
-                    # 6) Insert each row while checking for duplicates
+                    # Insert each row while checking for duplicates
                     for row in cleaned_table["rows"]:
                         title = row[0]
                         release_date = row[1]
@@ -250,10 +246,6 @@ def update_database():
                             continue  # Skip duplicates
 
                         # Otherwise, create a new OriginalContent entry
-                        # Adjust indices to match your final_headers
-                        # Let's assume your process_table sets columns in this order:
-                        # [Title, Release_date, Genre, Language, Status]
-                        # and you want to fill your DB model with them:
                         genre = row[2]
                         language = row[3]
                         status = row[4]
@@ -265,7 +257,6 @@ def update_database():
                             try:
                                 parsed_date = datetime.strptime(release_date, "%Y-%m-%d")
                             except ValueError:
-                                # handle partial or invalid date
                                 pass
 
                         new_entry = OriginalContent(
@@ -285,7 +276,6 @@ def update_database():
                     print(f"Inserted {len(cleaned_table['rows'])} new entries for {current_service} {current_type} content")
             db.commit()
 
-    # 7) Commit all changes
     db.commit()
     db.close()
 
