@@ -40,7 +40,8 @@ def update_database():
                 wiki_content.return_NF_films_2022,
                 # wiki_content.return_NF_films_2023,
                 wiki_content.return_NF_films_2024,
-                wiki_content.return_NF_films_since_2025
+                wiki_content.return_NF_films_2025,
+                wiki_content.return_NF_films_since_2026
             ],
             # Exclusive International Distribution Films
             [

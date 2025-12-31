@@ -3,6 +3,7 @@ const changelogContent = [
         date: "Dec 30, 2025",
         content: [
             "URL has been updated to 'originalflix.rajveersodhi.com'.",
+            "The database has been updated."
         ]
     },
     {

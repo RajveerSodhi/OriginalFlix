@@ -44,8 +44,11 @@ def return_NF_films_2023():
 def return_NF_films_2024():
     return [return_wiki_page("List of Netflix original films (2024)", 72333193), 72333193]
 
-def return_NF_films_since_2025():
-    return [return_wiki_page("List of Netflix original films (since 2025)", 78545449), 78545449]
+def return_NF_films_2025():
+    return [return_wiki_page("List of Netflix original films (2025)", 78545449), 78545449]
+
+def return_NF_films_since_2026():
+    return [return_wiki_page("List of Netflix original films (since 2025)", 81878886), 81878886]
 
 # Amazon Prime Video
 def return_APV_programming():
